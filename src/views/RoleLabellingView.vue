@@ -9,6 +9,15 @@
         v-bind:tokens="sentence.tokens"
       />
     </div>
+    <ui-button
+      color="primary"
+      v-on:click="loading = !loading">
+        Generate pattern
+    </ui-button>
+    <ui-progress-circular
+      color="multi-color"
+      v-show="loading"
+    />
   </div>
 </template>
 
@@ -28,6 +37,7 @@ export default {
     return {
       document,
       sentence: null,
+      loading: false,
     };
   },
   mounted() {
@@ -47,5 +57,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
