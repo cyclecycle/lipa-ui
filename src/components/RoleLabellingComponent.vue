@@ -1,12 +1,13 @@
 <template>
   <div class="role-labelling-component">
     <div class="sentence">
-      <span
-        v-for="token in tokens"
-        v-bind:key="token.id"
-        class="token"
-        v-on:click="addOrRemoveTokenFromActiveSlot(token.id)"
-      >{{ token.text }}</span>
+      <AnnotatedText
+        ref="annotatedText"
+        :text="sentence"
+        :annotations="tokens"
+        :spanEvents="spanEvents"
+        :spanClasses="spanClasses"
+      />
     </div>
     <br>
     <div class="slots">
@@ -15,7 +16,7 @@
         class="slot"
       >
         <div
-          v-bind:class="tokenHolderClasses(slot)"
+          :class="tokenHolderClasses(slot)"
           v-on:click="activateSlot(slot.id)"
         >
           <span v-for="token in slotTokens(slot.id)">{{ token.text }} </span>
@@ -41,24 +42,28 @@
 </template>
 
 <script>
-
-const defaultSlot = {
-    id: 1,
-    label: '',
-    tokenIds: [],
-}
+import AnnotatedText from 'vue-annotated-text'
 
 export default {
   name: 'RoleLabellingComponent',
   components: {
   },
   props: {
-    tokens: Array
+    tokens: Array,
+    sentence: String,
   },
   data() {
     return {
-      slots: [{...defaultSlot}],
+      slots: [{
+        id: 1,
+        label: '',
+        tokenIds: [],
+      }],
       activeSlotId: 1,
+      spanEvents: {
+        'click': this.handleTokenSpanClicked
+      },
+      spanClasses: ['token'],
     }
   },
   methods: {
@@ -74,11 +79,14 @@ export default {
       return newSlotId
     },
     addSlot: function() {
+      const newSlotId = this.newSlotId()
       const newSlot = {
-        ...defaultSlot,
-        id: this.newSlotId(),
+        id: newSlotId,
+        label: "",
+        tokenIds: []
       }
       this.slots.push(newSlot)
+      this.activateSlot(newSlotId)
     },
     removeSlot: function(slotId) {
       const newSlots = this.slots.filter(slot => {
@@ -88,6 +96,17 @@ export default {
     },
     activateSlot: function(slotId) {
       this.activeSlotId = slotId
+    },
+    handleTokenSpanClicked: function(e) {
+      let annotationIds = e.target.attributes['data-annotation-ids'].value
+      if (annotationIds !== '') {
+        annotationIds = annotationIds.split(',')
+      } else {
+        annotationIds = []
+      }
+      let tokenId = annotationIds[0]  // Should only ever be one here
+      tokenId = Number(tokenId)
+      this.addOrRemoveTokenFromActiveSlot(tokenId)
     },
     addOrRemoveTokenFromActiveSlot: function(tokenId) {
       const newSlots = this.slots.map(slot => {
@@ -120,13 +139,16 @@ export default {
         classes.push('slot-token-holder-active')
       }
       return classes
+    },
+    getAnnotationColor: function (annotation) {
+      return '#42b3f4'
     }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .role-labelling-component {
   display: inline-block;
 }
@@ -136,11 +158,11 @@ export default {
 .slot-token-holder {
   border: 1px solid black;
   display: inline-block;
-  height: 80px;
+  min-height: 30px;
   min-width: 150px;
 }
 .slot-token-holder-active {
-  border: 2px solid blue;
+  border: 2px solid;
 }
 .add-slot-button {
   display: inline-block;

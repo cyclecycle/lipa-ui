@@ -5,7 +5,8 @@
     </div>
     <div>
       <RoleLabellingComponent
-        v-bind:tokens="RoleLabellingComponentData.tokens"
+        v-bind:sentence="sentence.text"
+        v-bind:tokens="sentence.tokens"
       />
     </div>
   </div>
@@ -13,21 +14,34 @@
 
 <script>
 import RoleLabellingComponent from '../components/RoleLabellingComponent.vue';
-import RoleLabellingComponentData from '../data/example/RoleLabellingComponentData';
+import document from '../data/example/document';
 
 export default {
   name: 'RoleLabellingView',
   components: {
     RoleLabellingComponent,
   },
-  // mounted() {
-  //   console.log(RoleLabellingComponentData)
-  // },
+  props: {
+    sentenceId: Number,
+  },
   data() {
     return {
-      RoleLabellingComponentData,
-    }
+      document,
+      sentence: null,
+    };
   },
+  mounted() {
+    this.loadSentence(this.sentenceId)
+  },
+  methods: {
+    loadSentence: function (sentenceId) {
+      const filtered = this.document.sentences.filter(sentence => {
+        return sentence.id == sentenceId
+      })
+      const sentence = filtered[0]
+      this.sentence = sentence
+    }
+  }
 };
 </script>
 

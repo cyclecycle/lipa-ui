@@ -1,19 +1,12 @@
 <template>
   <div id="app">
-    <RoleLabellingView />
+    <div id="nav">
+      <router-link to="/document">DocumentView</router-link> |
+      <router-link to="/role-label">RoleLabellingView</router-link>
+    </div>
+    <router-view/>
   </div>
 </template>
-
-<script>
-import RoleLabellingView from './views/RoleLabellingView.vue';
-
-export default {
-  name: 'app',
-  components: {
-    RoleLabellingView,
-  },
-};
-</script>
 
 <style>
 #app {

@@ -4367,6 +4367,11 @@ flatted@^2.0.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.0.tgz#55122b6536ea496b4b44893ee2608141d10d9916"
   integrity sha512-R+H8IZclI8AAkSBRQJLVOsxwAoHd6WC40b4QTNWIjzAa6BXOBfQcM587MXDTVPeYaopFNWHUFLx7eNmHDSxMWg==
 
+flatten-overlapping-ranges@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/flatten-overlapping-ranges/-/flatten-overlapping-ranges-1.0.1.tgz#9d76a1e7e9c16c9a2d6339c3942bc04f6f1fabf8"
+  integrity sha512-ZKivEflTqLTY6/cnGgJUvaTW0vYEKBLFy0V5HQwvgJT8EGOHw7kpRjB4IX2udJHyt08g3Wwpdl0eDrv+dHkWFw==
+
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"
@@ -9470,6 +9475,11 @@ text-table@^0.2.0, text-table@~0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+thenby@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/thenby/-/thenby-1.3.0.tgz#6658e6bac38c396382cba50b840b1d7867d5fa7c"
+  integrity sha512-h41Zl8QWDcMmpAphiSgZrx8XAb2TDxJfU8kqEUB1xRfUlvCcE1snDcf8mv9IOFoAXT5f2ItHC2fkmp+3RCWZOQ==
+
 thenify-all@^1.0.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/thenify-all/-/thenify-all-1.6.0.tgz#1a1918d402d8fc3f98fbf234db0bcc8cc10e9726"
@@ -9922,6 +9932,26 @@ vm-browserify@0.0.4:
   integrity sha1-XX6kW7755Kb/ZflUOOCofDV9WnM=
   dependencies:
     indexof "0.0.1"
+
+vue-annotated-sentence@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vue-annotated-sentence/-/vue-annotated-sentence-0.1.0.tgz#23a89c3957ca84c32d341fb0062557aed297388e"
+  integrity sha512-44O6+IXLp0t9elKNWrquFlWWoC69qOUrHC9vmUpPRR7TNq8ruTcGHVAM5ZyoWBm4lyhS8TTY/IhK5oPIpSu1WA==
+  dependencies:
+    core-js "^2.6.5"
+    flatten-overlapping-ranges "^1.0.0"
+    thenby "^1.3.0"
+    vue "^2.6.10"
+
+vue-annotated-text@^0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/vue-annotated-text/-/vue-annotated-text-0.1.2.tgz#96aabc885d2d3265cb35e025c542651fef1e6a04"
+  integrity sha512-CIqZUy5SXH98zOHfTJeJbf7Qdw8IZf+yeh16Z/3f7H6XF3YGTQIEglevnRTKN4TRJRfZDGshBPnFHwcnjWYQTw==
+  dependencies:
+    core-js "^2.6.5"
+    flatten-overlapping-ranges "^1.0.0"
+    thenby "^1.3.0"
+    vue "^2.6.10"
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
