@@ -23,7 +23,8 @@
 
 <script>
 import RoleLabellingComponent from '../components/RoleLabellingComponent.vue';
-import document from '../data/example/document';
+import document from '../database/mock/document';
+
 
 export default {
   name: 'RoleLabellingView',

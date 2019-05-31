@@ -1,6 +1,8 @@
 # lipa
 
-## Project setup
+## Development
+
+### Project setup
 ```
 yarn install
 ```

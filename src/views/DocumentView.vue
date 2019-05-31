@@ -1,16 +1,9 @@
 <template>
   <div>
-    <div v-for="section in document.sectionFields">
-      <div
-        v-for="sentence in getSectionSentences(section)"
-        :class="sentenceClasses(sentence.id)"
-        v-on:click="activateSentence(sentence.id)"
-      >
-        <AnnotatedText
-          :text="sentence.text"
-          :annotations="sentence.tokens"
-        />
-      </div>
+    <div v-for="section in document.data.sections">
+      <AnnotatedText
+        :text="section.text"
+      />
     </div>
     <router-link :to="roleLabelRoute()">
       <ui-button color="primary">
@@ -22,15 +15,31 @@
 
 <script>
 import AnnotatedText from 'vue-annotated-text'
-import document from '../data/example/document'
+import database from '../database'
 
 export default {
   name: 'DocumentView',
+  props: {
+    documentId: {
+      type: Number,
+      default: 1,
+    }
+  },
   data() {
     return {
-      document,
+      document: null,
       activeSentenceId: null,
     }
+  },
+  mounted() {
+    database.get('documents/?id=1')
+      .then(items => {
+        this.document = items[0]
+        console.log(items[0])
+      })
+      .catch(e => {
+        console.log(e)
+      })
   },
   methods: {
     getSectionSentences: function (section) {
