@@ -3,7 +3,9 @@
     <div v-for="section in document.data.sections">
       <AnnotatedText
         :text="section.text"
-        :annotations="[]"
+        :annotations="getSectionSentenceData(section.name)"
+        :spanClasses="annotatedTextSpanClasses"
+        :spanEvents="annotatedTextSpanEvents"
       />
     </div>
     <router-link :to="roleLabelRoute()">
@@ -29,28 +31,54 @@ export default {
   data() {
     return {
       document: null,
+      sentences: [],
       activeSentenceId: null,
+      annotatedTextSpanClasses: ['sentence'],
+      annotatedTextSpanEvents: {
+        click: this.onSpanClick,
+      },
     }
   },
   mounted() {
     this.loadDocument(this.documentId)
+    this.loadSentences(this.documentId)
   },
   methods: {
     loadDocument: function (documentId) {
-      database.get('documents/?id=1')
+      const query = `documents/?id=${documentId}`
+      database.get(query)
         .then(items => {
           this.document = items[0]
-          console.log(items[0])
         })
         .catch(e => {
-          console.log(e)
         })
     },
-    getSectionSentences: function (section) {
-      const sentences = this.document.sentences.filter(sentence => {
-        return sentence.section == section
+    loadSentences: function (documentId) {
+      const query = `sentences/?document_id=${documentId}`
+      database.get(query)
+        .then(items => {
+          this.sentences = items
+          console.log(items)
+        })
+        .catch(e => {
+        })
+    },
+    getSectionSentences: function (sectionName) {
+      const sentences = this.sentences.filter(sentence => {
+        return sentence.data.section == sectionName
       })
       return sentences
+    },
+    getSectionSentenceData: function (sectionName) {
+      const sentences = this.getSectionSentences(sectionName)
+      const sentenceData = sentences.map(sentence => {
+        const data = {
+          ...sentence.data,
+          id: sentence.id,
+        }
+        return data
+      })
+      return sentenceData
     },
     activateSentence: function (sentenceId) {
       this.activeSentenceId = sentenceId
@@ -74,6 +102,21 @@ export default {
     roleLabelRoute: function () {
       const route = `/role-label/?sent_id=${this.activeSentenceId}`
       return route
+    },
+    getSpanClasses: function(span) {
+      if (span.annotationIds.length > 0) {
+        return ['sentence']
+      } else {
+        return []
+      }
+    },
+    onSpanClick: function(e) {
+      let annotationIds = e.target.attributes['data-annotation-ids'].value
+      if (annotationIds !== '') {
+        annotationIds = annotationIds.split(',')
+        const sentenceId = annotationIds[0]
+        this.activateSentence(sentenceId)
+      }
     }
   }
 }
@@ -83,10 +126,10 @@ export default {
 .sentence {
   display: inline-block;
 }
-.sentence-inactive:hover {
+.sentence:hover {
   outline: 1px solid black;
 }
 .sentence-active {
-  outline: 2px solid black;
+  outline: 2px solid black !important;
 }
 </style>

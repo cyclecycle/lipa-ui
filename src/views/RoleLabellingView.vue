@@ -5,8 +5,8 @@
     </div>
     <div>
       <RoleLabellingComponent
-        v-bind:sentence="sentence.text"
-        v-bind:tokens="sentence.tokens"
+        v-bind:sentence="sentence.sentence_text"
+        v-bind:tokens="tokens"
       />
     </div>
     <ui-button
@@ -23,7 +23,7 @@
 
 <script>
 import RoleLabellingComponent from '../components/RoleLabellingComponent.vue';
-import document from '../database/mock/document';
+import database from '../database'
 
 
 export default {
@@ -32,26 +32,51 @@ export default {
     RoleLabellingComponent,
   },
   props: {
-    sentenceId: Number,
+    sentenceId: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
-      document,
       sentence: null,
+      tokens: [],
       loading: false,
     };
   },
   mounted() {
     this.loadSentence(this.sentenceId)
+    this.loadTokens(this.sentenceId)
   },
   methods: {
     loadSentence: function (sentenceId) {
-      const filtered = this.document.sentences.filter(sentence => {
-        return sentence.id == sentenceId
-      })
-      const sentence = filtered[0]
-      this.sentence = sentence
-    }
+      const query = `sentences/?id=${sentenceId}`
+      database.get(query)
+        .then(items => {
+          this.sentence = items[0]
+          console.log(sentence.sentence_text)
+        })
+        .catch(e => {
+        })
+    },
+    loadTokens: function (sentenceId) {
+      const query = `tokens/?sentence_id=${sentenceId}`
+      database.get(query)
+        .then(items => {
+          let tokens = items
+          tokens = tokens.map(token => {
+            const data = {
+              ...token.data,
+              id: token.id
+            }
+            return data
+          })
+          this.tokens = tokens
+          console.log(tokens)
+        })
+        .catch(e => {
+        })
+    },
   }
 };
 </script>

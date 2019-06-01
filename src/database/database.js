@@ -52,11 +52,13 @@ class Database {
     const parsedItem = {}
     Object.keys(item).forEach(key => {
       const keyIsJsonField = this.jsonFields.includes(key)
+      const value = item[key]
+      let newValue = value
       if (keyIsJsonField) {
-        const value = item[key]
         const parsedValue = JSON.parse(value)
-        parsedItem[key] = parsedValue
+        newValue = parsedValue
       }
+      parsedItem[key] = newValue
     })
     return parsedItem
   }
