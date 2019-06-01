@@ -3,6 +3,7 @@
     <div v-for="section in document.data.sections">
       <AnnotatedText
         :text="section.text"
+        :annotations="[]"
       />
     </div>
     <router-link :to="roleLabelRoute()">
@@ -32,16 +33,19 @@ export default {
     }
   },
   mounted() {
-    database.get('documents/?id=1')
-      .then(items => {
-        this.document = items[0]
-        console.log(items[0])
-      })
-      .catch(e => {
-        console.log(e)
-      })
+    this.loadDocument(this.documentId)
   },
   methods: {
+    loadDocument: function (documentId) {
+      database.get('documents/?id=1')
+        .then(items => {
+          this.document = items[0]
+          console.log(items[0])
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     getSectionSentences: function (section) {
       const sentences = this.document.sentences.filter(sentence => {
         return sentence.section == section

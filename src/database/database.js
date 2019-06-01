@@ -4,12 +4,18 @@ import axios from 'axios';
 class Database {
   constructor(env) {
     this.env = env
-    // this.mock = (env === 'mock')
+    this.url = null
+    this.trimmedUrl = null
+    this.jsonFields = []
   }
 
   addUrl(url) {
     this.url = url
     this.trimmedUrl = this.trimUrl(url)
+  }
+
+  addJsonFields(fields) {
+    this.jsonFields = fields
   }
 
   trimUrl(url) {
@@ -43,30 +49,16 @@ class Database {
 
   parseJsonFields(item) {
     // All fields named 'data' are encoded in JSON formatc
-    console.log('parse json field started')
-    if (item instanceof Object) {
-      console.log('object item being parsed')
-      const parsedItem = {}
-      Object.keys(item).forEach(key => {
-        if (key === 'data') {
-          const value = item[key]
-          const parsedValue = JSON.parse(value)
-          parsedItem[key] = parsedValue
-        }
-      })
-      return parsedItem
-    }
-    console.log(item)
-    if (item instanceof Array) {
-      console.log('array item being parsed')
-      const parsedItem = item.map(element => {
-        console.log(element)
-        const parsedElement = this.parseJsonFields(element)
-        return parsedElement
-      })
-      console.log(parsedItem)
-      return parsedItem
-    }
+    const parsedItem = {}
+    Object.keys(item).forEach(key => {
+      const keyIsJsonField = this.jsonFields.includes(key)
+      if (keyIsJsonField) {
+        const value = item[key]
+        const parsedValue = JSON.parse(value)
+        parsedItem[key] = parsedValue
+      }
+    })
+    return parsedItem
   }
 
   get(queryString) {
@@ -74,8 +66,7 @@ class Database {
     return axios.get(queryUrl)
       .then(response => {
         const items = response.data
-        console.log(items)
-        const parsedItems = this.parseJsonFields(items)
+        const parsedItems = items.map(item => this.parseJsonFields(item))
         return parsedItems
       })
       .catch(e => {

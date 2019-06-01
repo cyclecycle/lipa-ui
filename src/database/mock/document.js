@@ -38,7 +38,7 @@ export default {
           start: 15,
           length: 7,
         },
-      ]
+      ],
     },
     {
       id: 1,
