@@ -2504,6 +2504,10 @@ color-convert@^1.9.0, color-convert@^1.9.1:
   dependencies:
     color-name "1.1.3"
 
+"color-mixer@github:kosamari/color-mixer":
+  version "1.0.0"
+  resolved "https://codeload.github.com/kosamari/color-mixer/tar.gz/b4a48975c1861a45ce97d8d91ebe8bfa29896121"
+
 color-name@1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
@@ -10009,10 +10013,11 @@ vue-annotated-sentence@^0.1.0:
     vue "^2.6.10"
 
 vue-annotated-text@^0.1.0:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/vue-annotated-text/-/vue-annotated-text-0.1.2.tgz#96aabc885d2d3265cb35e025c542651fef1e6a04"
-  integrity sha512-CIqZUy5SXH98zOHfTJeJbf7Qdw8IZf+yeh16Z/3f7H6XF3YGTQIEglevnRTKN4TRJRfZDGshBPnFHwcnjWYQTw==
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/vue-annotated-text/-/vue-annotated-text-0.1.6.tgz#1d78462292d603ca4fe15e623dd82354e44ae451"
+  integrity sha512-r73dfaTnvo5S3r8y6rER8Jj0kGL/e7DJV0FiEHCJsMLaSKme33qifQZIthWIV5MUo7eMezYXw+akjtHZtd1eHw==
   dependencies:
+    color-mixer kosamari/color-mixer
     core-js "^2.6.5"
     flatten-overlapping-ranges "^1.0.0"
     thenby "^1.3.0"

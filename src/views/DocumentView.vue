@@ -4,7 +4,7 @@
       <AnnotatedText
         :text="section.text"
         :annotations="getSectionSentences(section.name)"
-        :spanClasses="annotatedTextSpanClasses"
+        :getSpanClasses="getAnnotatedTextSpanClasses"
         :spanEvents="annotatedTextSpanEvents"
       />
     </div>
@@ -33,7 +33,6 @@ export default {
       document: null,
       sentences: [],
       activeSentenceId: null,
-      annotatedTextSpanClasses: ['sentence'],
       annotatedTextSpanEvents: {
         click: this.onSpanClick,
       },
@@ -63,26 +62,22 @@ export default {
       const route = `/role-label/?sent_id=${this.activeSentenceId}`
       return route
     },
-    getSpanClasses: function(span) {
+    getAnnotatedTextSpanClasses: function(span) {
       if (span.annotationIds.length > 0) {
         return ['sentence']
       } else {
         return []
       }
     },
-    onSpanClick: function(e) {
-      let annotationIds = e.target.attributes['data-annotation-ids'].value
-      if (annotationIds !== '') {
-        annotationIds = annotationIds.split(',')
-        const sentenceId = annotationIds[0]
-        this.activateSentence(sentenceId)
-      }
-    }
+    onSpanClick: function(e, annotations) {
+      const sentenceId = annotations[0].id
+      this.activateSentence(sentenceId)
+    },
   }
 }
 </script>
 
-<style>
+<style scoped>
 .sentence {
   display: inline-block;
 }

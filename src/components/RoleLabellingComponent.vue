@@ -6,7 +6,7 @@
         :text="sentence"
         :annotations="tokens"
         :spanEvents="spanEvents"
-        :spanClasses="spanClasses"
+        :getSpanClasses="getSpanClasses"
       />
     </div>
     <br>
@@ -97,14 +97,8 @@ export default {
     activateSlot: function(slotId) {
       this.activeSlotId = slotId
     },
-    handleTokenSpanClicked: function(e) {
-      let annotationIds = e.target.attributes['data-annotation-ids'].value
-      if (annotationIds !== '') {
-        annotationIds = annotationIds.split(',')
-      } else {
-        annotationIds = []
-      }
-      let tokenId = annotationIds[0]  // Should only ever be one here
+    handleTokenSpanClicked: function(e, annotations) {
+      let tokenId = annotations[0].id
       tokenId = Number(tokenId)
       this.addOrRemoveTokenFromActiveSlot(tokenId)
     },
@@ -142,6 +136,13 @@ export default {
     },
     getAnnotationColor: function (annotation) {
       return '#42b3f4'
+    },
+    getSpanClasses: function(span) {
+      if (span.annotationIds.length > 0) {
+        return ['token']
+      } else {
+        return []
+      }
     }
   }
 };

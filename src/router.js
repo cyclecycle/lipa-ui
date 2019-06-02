@@ -1,28 +1,29 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import DocumentView from './views/DocumentView.vue'
-import RoleLabellingView from './views/RoleLabellingView.vue'
-import PatternsView from './views/RoleLabellingView.vue'
-
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/document',
-      name: 'document',
-      component: () => import('./views/DocumentView.vue'),
-      props: (route) => {
-        return {
-          documentId: Number(route.query.doc_id)
-        }
-      },
-    },
-    {
       path: '/patterns',
       name: 'patterns',
       component: () => import('./views/PatternsView.vue'),
+    },
+    {
+      path: '/matches',
+      name: 'matches',
+      component: () => import('./views/MatchesView.vue'),
+    },
+    {
+      path: '/document',
+      name: 'document',
+      component: () => import('./views/DocumentView.vue'),
+      // props: (route) => {
+      //   return {
+      //     documentId: Number(route.query.doc_id)
+      //   }
+      // },
     },
     {
       path: '/role-label',
