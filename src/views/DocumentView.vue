@@ -40,31 +40,13 @@ export default {
     }
   },
   mounted() {
-    this.loadDocument(this.documentId)
-    this.loadSentences(this.documentId)
+    database.loadDocument(this, this.documentId)
+    database.loadSentences(this, this.documentId)
   },
   methods: {
     isLoaded: function() {
       const isLoaded = this.document !== null
       return isLoaded
-    },
-    loadDocument: function (documentId) {
-      const query = `documents/?id=${documentId}`
-      database.get(query)
-        .then(items => {
-          this.document = items[0]
-        })
-        .catch(e => {
-        })
-    },
-    loadSentences: function (documentId) {
-      const query = `sentences/?document_id=${documentId}`
-      database.get(query)
-        .then(items => {
-          this.sentences = items
-        })
-        .catch(e => {
-        })
     },
     getSectionSentences: function (sectionName) {
       const sentences = this.sentences.filter(sentence => {
