@@ -5,7 +5,7 @@
     </div>
     <div>
       <RoleLabellingComponent
-        v-bind:sentence="sentence.sentence_text"
+        v-bind:sentence="sentence.text"
         v-bind:tokens="tokens"
       />
     </div>
@@ -57,7 +57,3 @@ export default {
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>

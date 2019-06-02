@@ -1,9 +1,9 @@
 <template>
   <div v-if="isLoaded()">
-    <div v-for="section in document.data.sections">
+    <div v-for="section in document.sections">
       <AnnotatedText
         :text="section.text"
-        :annotations="getSectionSentenceData(section.name)"
+        :annotations="getSectionSentences(section.name)"
         :spanClasses="annotatedTextSpanClasses"
         :spanEvents="annotatedTextSpanEvents"
       />
@@ -45,25 +45,16 @@ export default {
   },
   methods: {
     isLoaded: function() {
-      const isLoaded = this.document !== null
+      const documentLoaded = this.document !== null
+      const sentencesLoaded = this.sentences.length > 0
+      const isLoaded = (documentLoaded && sentencesLoaded)
       return isLoaded
     },
     getSectionSentences: function (sectionName) {
       const sentences = this.sentences.filter(sentence => {
-        return sentence.data.section == sectionName
+        return sentence.section == sectionName
       })
       return sentences
-    },
-    getSectionSentenceData: function (sectionName) {
-      const sentences = this.getSectionSentences(sectionName)
-      const sentenceData = sentences.map(sentence => {
-        const data = {
-          ...sentence.data,
-          id: sentence.id,
-        }
-        return data
-      })
-      return sentenceData
     },
     activateSentence: function (sentenceId) {
       this.activeSentenceId = sentenceId

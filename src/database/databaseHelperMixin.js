@@ -4,13 +4,18 @@ they can be called like:
 database.loadDocument(this, documentId)
 */
 
+import util from './util';
+
+
 const databaseHelperMixin = {
   loadDocument (target, documentId) {
     const query = `documents/?id=${documentId}`
     const database = this
     database.get(query)
       .then(items => {
-        target.document = items[0]
+        let document_ = items[0]
+        document_ = util.unpackValues(document_, 'data')
+        target.document = document_
       })
   },
   loadSentences (target, documentId) {
@@ -18,7 +23,9 @@ const databaseHelperMixin = {
     const database = this
     database.get(query)
       .then(items => {
-        target.sentences = items
+        let sentences = items
+        sentences = util.unpackValues(sentences, 'data')
+        target.sentences = sentences
       })
   },
   loadSentence (target, sentenceId) {
@@ -26,7 +33,9 @@ const databaseHelperMixin = {
     const database = this
     database.get(query)
       .then(items => {
-        target.sentence = items[0]
+        let sentence = items[0]
+        sentence = util.unpackValues(sentence, 'data')
+        target.sentence = sentence
       })
   },
   loadTokens (target, sentenceId) {
@@ -35,13 +44,7 @@ const databaseHelperMixin = {
     database.get(query)
       .then(items => {
         let tokens = items
-        tokens = tokens.map(token => {
-          const data = {
-            ...token.data,
-            id: token.id
-          }
-          return data
-        })
+        tokens = util.unpackValues(tokens, 'data')
         target.tokens = tokens
       })
   },
