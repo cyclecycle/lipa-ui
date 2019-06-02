@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isLoaded()">
     <div>
       <h2>Create training example</h2>
     </div>
@@ -45,37 +45,14 @@ export default {
     };
   },
   mounted() {
-    this.loadSentence(this.sentenceId)
-    this.loadTokens(this.sentenceId)
+    database.loadSentence(this, this.sentenceId)
+    database.loadTokens(this, this.sentenceId)
   },
   methods: {
-    loadSentence: function (sentenceId) {
-      const query = `sentences/?id=${sentenceId}`
-      database.get(query)
-        .then(items => {
-          this.sentence = items[0]
-          console.log(sentence.sentence_text)
-        })
-        .catch(e => {
-        })
-    },
-    loadTokens: function (sentenceId) {
-      const query = `tokens/?sentence_id=${sentenceId}`
-      database.get(query)
-        .then(items => {
-          let tokens = items
-          tokens = tokens.map(token => {
-            const data = {
-              ...token.data,
-              id: token.id
-            }
-            return data
-          })
-          this.tokens = tokens
-          console.log(tokens)
-        })
-        .catch(e => {
-        })
+    isLoaded: function() {
+      const sentenceLoaded = this.sentence !== null
+      const isLoaded = sentenceLoaded
+      return isLoaded
     },
   }
 };

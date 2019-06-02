@@ -12,8 +12,6 @@ const databaseHelperMixin = {
       .then(items => {
         target.document = items[0]
       })
-      .catch(e => {
-      })
   },
   loadSentences (target, documentId) {
     const query = `sentences/?document_id=${documentId}`
@@ -22,9 +20,31 @@ const databaseHelperMixin = {
       .then(items => {
         target.sentences = items
       })
-      .catch(e => {
+  },
+  loadSentence (target, sentenceId) {
+    const query = `sentences/?id=${sentenceId}`
+    const database = this
+    database.get(query)
+      .then(items => {
+        target.sentence = items[0]
       })
-  }
+  },
+  loadTokens (target, sentenceId) {
+    const query = `tokens/?sentence_id=${sentenceId}`
+    const database = this
+    database.get(query)
+      .then(items => {
+        let tokens = items
+        tokens = tokens.map(token => {
+          const data = {
+            ...token.data,
+            id: token.id
+          }
+          return data
+        })
+        target.tokens = tokens
+      })
+  },
 }
 
 export default databaseHelperMixin;
