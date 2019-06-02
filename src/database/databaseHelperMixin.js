@@ -48,6 +48,15 @@ const databaseHelperMixin = {
         target.tokens = tokens
       })
   },
+  loadPatterns(target) {
+    const query = `patterns`
+    const database = this
+    database.get(query)
+      .then(items => {
+        let patterns = items
+        target.patterns = patterns
+      })
+  }
 }
 
 export default databaseHelperMixin;

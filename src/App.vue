@@ -2,7 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/document">DocumentView</router-link> |
-      <router-link to="/role-label">RoleLabellingView</router-link>
+      <router-link to="/patterns">PatternView</router-link> |
+      <router-link to="/role-label">RoleLabellingView</router-link> |
     </div>
     <router-view/>
   </div>
