@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isLoaded()">
     <div v-for="section in document.data.sections">
       <AnnotatedText
         :text="section.text"
@@ -44,6 +44,10 @@ export default {
     this.loadSentences(this.documentId)
   },
   methods: {
+    isLoaded: function() {
+      const isLoaded = this.document !== null
+      return isLoaded
+    },
     loadDocument: function (documentId) {
       const query = `documents/?id=${documentId}`
       database.get(query)
@@ -58,7 +62,6 @@ export default {
       database.get(query)
         .then(items => {
           this.sentences = items
-          console.log(items)
         })
         .catch(e => {
         })
@@ -82,22 +85,6 @@ export default {
     },
     activateSentence: function (sentenceId) {
       this.activeSentenceId = sentenceId
-    },
-    sentenceClasses: function (sentenceId) {
-      const sentenceClasses = ['sentence']
-      if (sentenceId === this.activeSentenceId) {
-        sentenceClasses.push('sentence-active')
-      } else {
-        sentenceClasses.push('sentence-inactive')
-      }
-      return sentenceClasses
-    },
-    getActiveSentence: function () {
-      const filtered = this.document.sentences.filtered(sentence => {
-        return sentence.id === this.activeSentenceId
-      })
-      const sentence = filtered[0]
-      return sentence
     },
     roleLabelRoute: function () {
       const route = `/role-label/?sent_id=${this.activeSentenceId}`
