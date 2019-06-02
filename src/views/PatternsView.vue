@@ -6,14 +6,19 @@
         {{ pattern }}
       </div>
     </div>
+    <PatternTable :patterns="patterns" />
   </div>
 </template>
 
 <script>
 import database from '../database'
+import PatternTable from '../components/PatternTable.vue'
 
 export default {
   name: 'PatternsView',
+  components: {
+    PatternTable
+  },
   data() {
     return {
       patterns: [],
