@@ -8,6 +8,18 @@
       @details-open="(row, index) => $toast.open(`Expanded ${row.id}`)"
       :show-detail-icon="true"
     >
+    <template slot-scope="props">
+      <b-table-column field="validationStatus" label="validationStatus">
+        <b-select v-model="props.row.validationStatus">
+          <option
+            v-for="option in validationOptions"
+            :value="option.value"
+            :key="option.value">
+            {{ option.label }}
+          </option>
+        </b-select>
+      </b-table-column>
+    </template>
       <template slot="detail" slot-scope="props">
         <div>
           <AnnotatedText
@@ -17,6 +29,7 @@
           />
         </div>
       </template>
+
     </b-table>
   </section>
 </template>
@@ -32,6 +45,20 @@ export default {
   },
   data() {
     return {
+      validationOptions: [
+        {
+          label: 'Unvalidated',
+          value: 'unvalidated',
+        },
+        {
+          label: 'Valid',
+          value: 'valid',
+        },
+        {
+          label: 'Invalid',
+          value: 'invalid',
+        },
+      ],
       matchSentence: 'The amyloid-beta oligomer hypothesis was introduced in 1998',
       matchAnnotations: [
         {
@@ -56,27 +83,31 @@ export default {
         },
       ],
       data: [
-        { 'id': 1, 'pattern': 'pattern 1', 'document_id': 1, 'desired': true},
+        { 'id': 1, 'patternId': '1', 'patternName': 'Pattern 1', 'document_id': 1, 'desired': true, 'validationStatus': 'unvalidated'},
       ],
       columns: [
         {
             field: 'id',
             label: 'Match ID',
-            numeric: true
+            numeric: true,
+            sortable: true,
         },
         {
-            field: 'pattern',
+            field: 'patternName',
             label: 'Pattern',
+            sortable: true,
         },
         {
             field: 'document_id',
             label: 'Document ID',
-            centered: true
+            centered: true,
+            sortable: true,
         },
         {
             field: 'desired',
             label: 'Desired',
-            centered: true
+            centered: true,
+            sortable: true,
         },
       ]
     }
@@ -84,6 +115,9 @@ export default {
   methods: {
     toggle(row) {
         this.$refs.table.toggleDetails(row)
+    },
+    isvalidated(row) {
+      return row.validationStatus === true
     },
     // getAnnotationColor(annotation) {
     //   if (annotation.label == 'slot1') {
