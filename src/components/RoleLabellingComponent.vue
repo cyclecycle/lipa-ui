@@ -28,14 +28,14 @@
           class="remove-slot-button"
           v-on:click="removeSlot(slot.id)"
         >
-          <ui-fab color="primary" icon="remove" size="normal"></ui-fab>
+          <b-button icon-right="remove">-</b-button>
       </div>
       </div>
       <div
         class="add-slot-button"
         v-on:click="addSlot()"
       >
-        <ui-fab color="primary" icon="add" size="normal"></ui-fab>
+        <b-button icon-right="add">+</b-button>
       </div>
     </div>
   </div>

@@ -6,8 +6,23 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/',
+      name: 'Overview',
+      component: () => import('./views/Overview.vue'),
+    },
+    {
+      path: '/documents',
+      name: 'DocumentsView',
+      component: () => import('./views/DocumentsView.vue'),
+    },
+    {
+      path: '/sentences',
+      name: 'SentencesView',
+      component: () => import('./views/SentencesView.vue'),
+    },
+    {
       path: '/patterns',
-      name: 'patterns',
+      name: 'patterns-view',
       component: () => import('./views/PatternsView.vue'),
       props: (route) => {
         return {
@@ -17,26 +32,36 @@ export default new Router({
     },
     {
       path: '/matches',
-      name: 'matches',
+      name: 'matches-view',
       component: () => import('./views/MatchesView.vue'),
     },
     {
       path: '/document',
-      name: 'document',
+      name: 'document-view',
       component: () => import('./views/DocumentView.vue'),
-      // props: (route) => {
-      //   return {
-      //     documentId: Number(route.query.doc_id)
-      //   }
-      // },
+      props: (route) => {
+        return {
+          documentId: Number(route.query.id)
+        }
+      },
     },
     {
-      path: '/role-label',
-      name: 'role-labelling-view',
-      component: () => import('./views/RoleLabellingView.vue'),
+      path: '/create-training-example',
+      name: 'CreateTrainingExampleView',
+      component: () => import('./views/CreateTrainingExampleView.vue'),
       props: (route) => {
         return {
           sentenceId: Number(route.query.sent_id)
+        }
+      },
+    },
+    {
+      path: '/calculate-pattern',
+      name: 'calculate-pattern-view',
+      component: () => import('./views/CalculatePatternView.vue'),
+      props: (route) => {
+        return {
+          posTrainingExampleId: Number(route.query.pos_example_id)
         }
       },
     },

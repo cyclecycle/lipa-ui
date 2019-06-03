@@ -9,7 +9,7 @@ import util from './util';
 
 const databasePostingHelpersMixin = {
   postTrainingExample(trainingExample) {
-    // database = this.database
+    // database = this
     // const query = 'training_examples/'
     // const trainingExampleJSON = JSON.stringify(trainingExample)
     // const payload = {

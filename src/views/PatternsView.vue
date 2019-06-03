@@ -1,9 +1,6 @@
 <template>
   <div>
-    <h2>Patterns</h2>
-    <b-field label="Name">
-      <b-input v-model="name"></b-input>
-    </b-field>
+    <div class="title">Patterns</div>
     <div v-if="isLoaded()">
       <div v-for="pattern in patterns">
         {{ pattern }}

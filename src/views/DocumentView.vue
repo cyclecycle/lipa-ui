@@ -1,18 +1,28 @@
 <template>
   <div v-if="isLoaded()">
-    <div v-for="section in document.sections">
+    <div class="heading">Document ID {{ documentId }}</div>
+<!--       <b-tooltip
+        v-if="activeSentenceId === null"
+        label="Select a sentence to create a training example"
+        position="is-right"
+      > -->
+        <b-button
+          color="primary"
+          :disabled="activeSentenceId === null"
+        >
+          <router-link :to="createTrainingExampleRoute()">
+            Create training example
+          </router-link>
+        </b-button>
+      <!-- </b-tooltip> -->
+    <section v-for="section in document.sections">
       <AnnotatedText
         :text="section.text"
         :annotations="getSectionSentences(section.name)"
         :getSpanClasses="getAnnotatedTextSpanClasses"
         :spanEvents="annotatedTextSpanEvents"
       />
-    </div>
-    <router-link :to="roleLabelRoute()">
-      <ui-button color="primary">
-        Create training example
-      </ui-button>
-    </router-link>
+    </section>
   </div>
 </template>
 
@@ -47,6 +57,7 @@ export default {
       const documentLoaded = this.document !== null
       const sentencesLoaded = this.sentences.length > 0
       const isLoaded = (documentLoaded && sentencesLoaded)
+      console.log(this.document)
       console.log(this.sentences)
       return isLoaded
     },
@@ -59,8 +70,8 @@ export default {
     activateSentence: function (sentenceId) {
       this.activeSentenceId = sentenceId
     },
-    roleLabelRoute: function () {
-      const route = `/role-label/?sent_id=${this.activeSentenceId}`
+    createTrainingExampleRoute: function () {
+      const route = `/create-training-example/?sent_id=${this.activeSentenceId}`
       return route
     },
     getAnnotatedTextSpanClasses: function(span) {
@@ -79,9 +90,6 @@ export default {
 </script>
 
 <style>
-.annotated-sentence-span {
-  display: inline-block;
-}
 .annotated-sentence-span:hover {
   outline: 1px solid black;
 }

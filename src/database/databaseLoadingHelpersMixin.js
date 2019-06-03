@@ -11,8 +11,10 @@ const databaseLoadingHelpersMixin = {
   loadDocument (target, documentId) {
     const query = `documents/?id=${documentId}`
     const database = this
+    console.log(query)
     database.get(query)
       .then(items => {
+        console.log(items)
         let document_ = items[0]
         document_ = util.unpackValues(document_, 'data')
         target.document = document_

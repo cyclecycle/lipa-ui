@@ -1,8 +1,6 @@
 <template>
   <div v-if="isLoaded()">
-    <div>
-      <h2>Create training example</h2>
-    </div>
+    <div class="title">Create training example</div>
     <div>
       <RoleLabellingComponent
         ref="roleLabellingComponent"
@@ -10,16 +8,11 @@
         v-bind:tokens="tokens"
       />
     </div>
-    <ui-button
-      color="primary"
+    <b-button
       v-on:click="submitTrainingExample()"
     >
         Generate pattern
-    </ui-button>
-    <ui-progress-circular
-      color="multi-color"
-      v-show="loading"
-    />
+    </b-button>
   </div>
 </template>
 
@@ -30,7 +23,7 @@ import RoleLabellingComponent from '../components/RoleLabellingComponent.vue';
 
 
 export default {
-  name: 'RoleLabellingView',
+  name: 'CreateTrainingExampleView',
   components: {
     RoleLabellingComponent,
   },
@@ -65,7 +58,7 @@ export default {
         .then(() => {
           this.loading = !this.loading
           router.push({
-             path: '/patterns', query: { highlight_pattern_id: 1 } 
+             path: '/calculate-pattern', query: { pos_example_id: 1 }
           })
         })
     },

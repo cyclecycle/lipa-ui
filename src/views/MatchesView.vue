@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Matches</h2>
+    <div class="title">Matches</div>
     <div v-if="isLoaded()">
       <div v-for="match in matches">
         {{ match }}
