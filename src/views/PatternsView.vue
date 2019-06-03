@@ -16,6 +16,12 @@ import PatternTable from '../components/PatternTable.vue'
 
 export default {
   name: 'PatternsView',
+  props: {
+    highlightPatternId: {
+      type: Number,
+      default: 1,
+    },
+  },
   components: {
     PatternTable
   },

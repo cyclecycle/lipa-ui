@@ -7,7 +7,7 @@ database.loadDocument(this, documentId)
 import util from './util';
 
 
-const databaseHelperMixin = {
+const databaseLoadingHelpersMixin = {
   loadDocument (target, documentId) {
     const query = `documents/?id=${documentId}`
     const database = this
@@ -56,7 +56,7 @@ const databaseHelperMixin = {
         let patterns = items
         target.patterns = patterns
       })
-  }
+  },
 }
 
-export default databaseHelperMixin;
+export default databaseLoadingHelpersMixin;

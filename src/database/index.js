@@ -1,10 +1,11 @@
 import config from '../config/config';
 import Database from './database';
-import databaseHelperMixin from './databaseHelperMixin';
-
+import databaseLoadingHelpersMixin from './databaseLoadingHelpersMixin';
+import databasePostingHelpersMixin from './databasePostingHelpersMixin';
 
 // Assign databaseHelper methods
-Object.assign(Database.prototype, databaseHelperMixin)
+Object.assign(Database.prototype, databaseLoadingHelpersMixin)
+Object.assign(Database.prototype, databasePostingHelpersMixin)
 
 // Instantiate Database
 const { env, databaseJsonFields } = config

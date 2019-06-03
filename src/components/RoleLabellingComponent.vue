@@ -54,11 +54,7 @@ export default {
   },
   data() {
     return {
-      slots: [{
-        id: 1,
-        label: '',
-        tokenIds: [],
-      }],
+      slots: [this.defaultSlot()],
       activeSlotId: 1,
       spanEvents: {
         'click': this.handleTokenSpanClicked
@@ -67,6 +63,14 @@ export default {
     }
   },
   methods: {
+    defaultSlot: function() {
+      const slot = {
+        id: 1,
+        label: 'slot1',
+        tokenIds: [],
+      }
+      return slot
+    },
     newSlotId: function() {
       let newSlotId
       if (this.slots.length === 0) {
@@ -80,9 +84,10 @@ export default {
     },
     addSlot: function() {
       const newSlotId = this.newSlotId()
+      const newSlotLabel = `slot${newSlotId}`
       const newSlot = {
         id: newSlotId,
-        label: "",
+        label: newSlotLabel,
         tokenIds: []
       }
       this.slots.push(newSlot)

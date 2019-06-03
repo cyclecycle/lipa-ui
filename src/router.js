@@ -9,6 +9,11 @@ export default new Router({
       path: '/patterns',
       name: 'patterns',
       component: () => import('./views/PatternsView.vue'),
+      props: (route) => {
+        return {
+          highlightPatternId: Number(route.query.highlight_pattern_id)
+        }
+      },
     },
     {
       path: '/matches',

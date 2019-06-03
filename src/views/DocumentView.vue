@@ -47,6 +47,7 @@ export default {
       const documentLoaded = this.document !== null
       const sentencesLoaded = this.sentences.length > 0
       const isLoaded = (documentLoaded && sentencesLoaded)
+      console.log(this.sentences)
       return isLoaded
     },
     getSectionSentences: function (sectionName) {
@@ -64,7 +65,7 @@ export default {
     },
     getAnnotatedTextSpanClasses: function(span) {
       if (span.annotationIds.length > 0) {
-        return ['sentence']
+        return ['annotated-sentence-span']
       } else {
         return []
       }
@@ -77,14 +78,14 @@ export default {
 }
 </script>
 
-<style scoped>
-.sentence {
+<style>
+.annotated-sentence-span {
   display: inline-block;
 }
-.sentence:hover {
+.annotated-sentence-span:hover {
   outline: 1px solid black;
 }
-.sentence-active {
+.annotated-sentence-span-active {
   outline: 2px solid black !important;
 }
 </style>
