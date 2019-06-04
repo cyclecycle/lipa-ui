@@ -57,8 +57,6 @@ export default {
       const documentLoaded = this.document !== null
       const sentencesLoaded = this.sentences.length > 0
       const isLoaded = (documentLoaded && sentencesLoaded)
-      console.log(this.document)
-      console.log(this.sentences)
       return isLoaded
     },
     getSectionSentences: function (sectionName) {

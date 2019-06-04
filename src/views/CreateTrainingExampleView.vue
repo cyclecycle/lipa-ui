@@ -54,6 +54,7 @@ export default {
       // POST training example to database. On success, show message and link to pattern table, and call pattern generation APi with training example ID. Listen, and show status in pattern table through "calculating" and "finding matches", and potentially "error".
       this.loading = !this.loading
       const trainingExample = this.$refs.roleLabellingComponent.slots
+      console.log(trainingExample)
       database.postTrainingExample(trainingExample)
         .then(() => {
           this.loading = !this.loading

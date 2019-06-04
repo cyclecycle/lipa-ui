@@ -19,10 +19,12 @@
           :class="tokenHolderClasses(slot)"
           v-on:click="activateSlot(slot.id)"
         >
-          <span v-for="token in slotTokens(slot.id)">{{ token.text }} </span>
+          <span v-for="token in slot.tokens">{{ token.text }} </span>
         </div>
         <div class="slot-label">
-          <ui-textbox label="Slot label" v-model="slot.label"></ui-textbox>
+          <b-field label="Slot label">
+            <b-input v-model="slot.label"></b-input>
+          </b-field>
         </div>
         <div
           class="remove-slot-button"
@@ -43,6 +45,7 @@
 
 <script>
 import AnnotatedText from 'vue-annotated-text'
+import util from '../util/util'
 
 export default {
   name: 'RoleLabellingComponent',
@@ -59,7 +62,6 @@ export default {
       spanEvents: {
         'click': this.handleTokenSpanClicked
       },
-      spanClasses: ['token'],
     }
   },
   methods: {
@@ -67,7 +69,7 @@ export default {
       const slot = {
         id: 1,
         label: 'slot1',
-        tokenIds: [],
+        tokens: [],
       }
       return slot
     },
@@ -86,9 +88,9 @@ export default {
       const newSlotId = this.newSlotId()
       const newSlotLabel = `slot${newSlotId}`
       const newSlot = {
+        ...this.defaultSlot(),
         id: newSlotId,
         label: newSlotLabel,
-        tokenIds: []
       }
       this.slots.push(newSlot)
       this.activateSlot(newSlotId)
@@ -105,32 +107,23 @@ export default {
     handleTokenSpanClicked: function(e, annotations) {
       let tokenId = annotations[0].id
       tokenId = Number(tokenId)
-      this.addOrRemoveTokenFromActiveSlot(tokenId)
+      const token = util.objById(this.tokens, tokenId)
+      this.addOrRemoveTokenFromActiveSlot(token)
     },
-    addOrRemoveTokenFromActiveSlot: function(tokenId) {
+    addOrRemoveTokenFromActiveSlot: function(token) {
       const newSlots = this.slots.map(slot => {
         if (slot.id === this.activeSlotId) {
-          if (!slot.tokenIds.includes(tokenId)) {
-            slot.tokenIds.push(tokenId)
+          if (!slot.tokens.includes(token)) {
+            slot.tokens.push(token)
           } else {
-            slot.tokenIds = slot.tokenIds.filter(idAlready => idAlready != tokenId)
+            slot.tokens = slot.tokens.filter(tokenAlready => {
+              return tokenAlready.id != token.id
+            })
           }
         }
         return slot
       })
       this.slots = newSlots
-    },
-    slotById: function(slotId) {
-      const filtered = this.slots.filter(slot => slot.id === slotId)
-      const slot = filtered[0]
-      return slot
-    },
-    slotTokens: function(slotId) {
-      const slot = this.slotById(slotId)
-      const tokens = this.tokens.filter(token => {
-        return slot.tokenIds.includes(token.id)
-      })
-      return tokens
     },
     tokenHolderClasses: function(slot) {
       const classes = ['slot-token-holder']
