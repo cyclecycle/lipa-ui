@@ -59,10 +59,11 @@ const databaseLoadingHelpersMixin = {
         target.patterns = patterns
       })
   },
-  loadRowsByQuery(query, target, targetAttribute) {
+  loadByQuery(query, target, targetAttribute) {
     const database = this
     database.get(query)
       .then(items => {
+        console.log(items)
         let unpackedItems = util.unpackValues(items, 'data')
         target[targetAttribute] = unpackedItems
       })

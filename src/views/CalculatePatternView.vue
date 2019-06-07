@@ -2,17 +2,19 @@
   <div>
     <div class="title">Calculate Pattern</div>
     <div class="heading">Positive training match</div>
-      <b-table
-        :data="posMatchTableData"
-        :columns="matchTableColumns"
-        :loading="!isLoaded()">
-      </b-table>
-    <div class="heading">Negative training matches</div>
-      <b-table
-        :data="negMatchTableData"
-        :columns="matchTableColumns"
-        :loading="!isLoaded()">
-      </b-table>
+      <MatchTable
+        :matches="posMatches"
+        :loading="!isLoaded()"
+        :slotLabelsAsColumns="false"
+      ></MatchTable>
+    <div v-if="negMatches.length > 0">
+      <div class="heading">Negative training matches</div>
+        <MatchTable
+          :matches="negMatches"
+          :loading="!isLoaded()"
+          :slotLabelsAsColumns="false"
+        ></MatchTable>
+    </div>
     <b-button
       type="is-primary"
       v-on:click="calculatePattern()"
@@ -31,9 +33,13 @@
 <script>
 import database from '../database';
 import patternAPI from '../pattern_api';
+import MatchTable from '../components/MatchTable.vue'
 
 export default {
   name: 'calculate-pattern-view',
+  components: {
+    MatchTable,
+  },
   props: {
     posMatchId: {
       type: Number,
@@ -50,59 +56,9 @@ export default {
       negMatches: [],
       loading: true,
       submitted: false,
-      defaultMatchTableColumns: [
-        {
-          field: 'id',
-          label: 'Match ID',
-          numeric: true,
-          width: 100,
-        },
-        {
-          field: 'sentence_id',
-          label: 'Sentence ID',
-          numeric: true,
-          width: 140,
-        },
-      ],
       patternResults: null,
       patternAPIMessageLog: []
     }
-  },
-  computed: {
-    slotLabels: function() {
-      const posMatch = this.posMatches[0]
-      if (posMatch === undefined) {
-        return []
-      }
-      const slots = posMatch.slots
-      const slotLabels = Object.keys(slots)
-      return slotLabels
-    },
-    matchTableColumns: function() {
-      const slotLabels = this.slotLabels
-      const slotColumns = slotLabels.map(slotLabel => {
-        const column = {
-          field: slotLabel,
-          label: slotLabel,
-        }
-        return column
-      })
-      const columns = [
-        ...slotColumns,
-        ...this.defaultMatchTableColumns,
-      ]
-      return columns
-    },
-    posMatchTableData: function() {
-      let rows = this.posMatches
-      rows = this.textifyMatchTokens(rows)
-      return rows
-    },
-    negMatchTableData: function() {
-      let rows = this.negMatches
-      rows = this.textifyMatchTokens(rows)
-      return rows
-    },
   },
   mounted() {
     this.loadPosMatches()
@@ -125,20 +81,6 @@ export default {
       const negMatchIds = this.negMatchIds
       database.loadRowsByIds('matches', negMatchIds, this, 'negMatches')
     },
-    textifyMatchTokens: function(matches) {
-      const slotLabels = this.slotLabels
-      const textifiedMatches = matches.map(match => {
-        const textifiedMatch = {...match}
-        slotLabels.forEach(label => {
-          const tokens = textifiedMatch.slots[label]
-          const tokenTexts = tokens.map(token => token.text)
-          const joinedTokenTexts = tokenTexts.join(', ')
-          textifiedMatch[label] = joinedTokenTexts
-        })
-        return textifiedMatch
-      })
-      return textifiedMatches
-    },
     calculatePattern: function() {
       // Hit API, listen to status.
       this.submitted = true
@@ -154,7 +96,8 @@ export default {
       })
       patternAPI.socket.on('build_pattern_success', function (data) {
         console.log(data)
-        this.patternResults = {patternId: data.patternId}
+        // this.patternResults = {patternId: data.pattern_id}
+        patternAPI.socket.emit('find_matches', data)
       })
     }
   }

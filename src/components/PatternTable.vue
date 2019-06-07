@@ -1,12 +1,18 @@
 <template>
-  <b-table :data='data' :columns='columns'></b-table>
+  <b-table
+    :data='patterns'
+    :columns='columns'
+    :loading="loading"
+  >
+  </b-table>
 </template>
 
 <script>
 export default {
   name: 'PatternTable',
   props: {
-    patterns: Array
+    patterns: Array,
+    loading: Boolean,
   },
   data() {
     return {
@@ -16,23 +22,23 @@ export default {
       columns: [
         {
             field: 'id',
-            label: 'ID',
-            width: '40',
+            label: 'Pattern ID',
+            width: '80',
             numeric: true
         },
         {
             field: 'name',
             label: 'Name',
         },
-        {
-            field: 'status',
-            label: 'Status',
-        },
-        {
-            field: 'n_matches',
-            label: '# Matches',
-            centered: true
-        },
+        // {
+        //     field: 'status',
+        //     label: 'Status',
+        // },
+        // {
+        //     field: 'n_matches',
+        //     label: '# Matches',
+        //     centered: true
+        // },
       ]
     }
   }

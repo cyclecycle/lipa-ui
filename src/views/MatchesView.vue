@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="title">Matches</div>
-    <div v-if="isLoaded()">
-      <div v-for="match in matches">
-        {{ match }}
-      </div>
-    </div>
-    <MatchTable :matches="matches" />
+    <MatchTable
+      :matches="matches"
+      :loading="!isLoaded()"
+    />
   </div>
 </template>
 
@@ -25,12 +23,13 @@ export default {
     }
   },
   mounted() {
-    // database.loadMatches(this)
+    database.loadByQuery('matches', this, 'matches')
   },
   methods: {
     isLoaded: function() {
       const matchesLoaded = this.matches.length > 0
-      const isLoaded = (matchesLoaded)
+      const isLoaded = matchesLoaded
+      console.log(this.matches)
       return isLoaded
     },
   }

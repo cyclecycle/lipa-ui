@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="title">Patterns</div>
-    <div v-if="isLoaded()">
-      <div v-for="pattern in patterns">
-        {{ pattern }}
-      </div>
+    <div>
+      <PatternTable
+        :patterns="patterns"
+        :loading="!isLoaded()"
+      />
     </div>
-    <PatternTable :patterns="patterns" />
   </div>
 </template>
 
@@ -31,12 +31,12 @@ export default {
     }
   },
   mounted() {
-    database.loadPatterns(this)
+    database.loadByQuery('patterns', this, 'patterns')
   },
   methods: {
     isLoaded: function() {
       const patternsLoaded = this.patterns.length > 0
-      const isLoaded = (patternsLoaded)
+      const isLoaded = patternsLoaded
       return isLoaded
     },
   }

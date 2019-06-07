@@ -1,14 +1,13 @@
 <template>
-  <section>
-    <b-table
-      :data='data'
-      :columns='columns'
-      detailed
-      detail-key="id"
-      @details-open="(row, index) => $toast.open(`Expanded ${row.id}`)"
-      :show-detail-icon="true"
-    >
-    <template slot-scope="props">
+  <b-table
+    :data="tableData"
+    :columns="columns"
+    :loading="loading"
+    detailed
+    detail-key="id"
+    :show-detail-icon="true"
+  >
+    <!-- <template slot-scope="props">
       <b-table-column field="validationStatus" label="validationStatus">
         <b-select v-model="props.row.validationStatus">
           <option
@@ -19,19 +18,17 @@
           </option>
         </b-select>
       </b-table-column>
+    </template> -->
+    <template slot="detail" slot-scope="props">
+      <div>
+        <AnnotatedText
+          :text="matchSentence"
+          :annotations="matchAnnotations"
+          :getSpanClasses="getSpanClasses"
+        />
+      </div>
     </template>
-      <template slot="detail" slot-scope="props">
-        <div>
-          <AnnotatedText
-            :text="matchSentence"
-            :annotations="matchAnnotations"
-            :spanClasses="['span-class']"
-          />
-        </div>
-      </template>
-
-    </b-table>
-  </section>
+  </b-table>
 </template>
 
 <script>
@@ -41,10 +38,37 @@ import AnnotatedText from 'vue-annotated-text'
 export default {
   name: 'MatchTable',
   props: {
-    matches: Array
+    matches: Array,
+    loading: Boolean,
+    slotLabelsAsColumns: {
+      type: Boolean,
+      default: false,
+    },
+    noSlotLabels: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      defaultMatchTableColumns: [
+        {
+          field: 'slotContent',
+          label: 'Match content',
+        },
+        {
+          field: 'id',
+          label: 'Match ID',
+          numeric: true,
+          width: 100,
+        },
+        {
+          field: 'sentence_id',
+          label: 'Sentence ID',
+          numeric: true,
+          width: 140,
+        },
+      ],
       validationOptions: [
         {
           label: 'Unvalidated',
@@ -82,54 +106,96 @@ export default {
           label: 'slot2',
         },
       ],
-      data: [
-        { 'id': 1, 'patternId': '1', 'patternName': 'Pattern 1', 'document_id': 1, 'desired': true, 'validationStatus': 'unvalidated'},
-      ],
-      columns: [
-        {
-            field: 'id',
-            label: 'Match ID',
-            numeric: true,
-            sortable: true,
-        },
-        {
-            field: 'patternName',
-            label: 'Pattern',
-            sortable: true,
-        },
-        {
-            field: 'document_id',
-            label: 'Document ID',
-            centered: true,
-            sortable: true,
-        },
-        {
-            field: 'desired',
-            label: 'Desired',
-            centered: true,
-            sortable: true,
-        },
-      ]
     }
   },
+  computed: {
+    slotLabels: function() {
+      const posMatch = this.matches[0]
+      if (posMatch === undefined) {
+        return []
+      }
+      const slots = posMatch.slots
+      const slotLabels = Object.keys(slots)
+      return slotLabels
+    },
+    columns: function() {
+      let columns = [...this.defaultMatchTableColumns]
+      if (this.slotLabelsAsColumns) {
+        const slotLabels = this.slotLabels
+        const slotColumns = slotLabels.map(slotLabel => {
+          const column = {
+            field: slotLabel,
+            label: slotLabel,
+          }
+          return column
+        })
+        columns = columns.concat(slotColumns)
+      }
+      return columns
+    },
+    tableData: function() {
+      let matches = this.matches
+      matches = this.textifyMatchTokens(matches)
+      matches = this.addSlotContentRepresentations(matches)
+      return matches
+    },
+  },
   methods: {
+    textifyMatchTokens: function(matches) {
+      const textifiedMatches = matches.map(match => {
+        const slotLabels = Object.keys(match.slots)
+        const textifiedMatch = {...match}
+        slotLabels.forEach(label => {
+          const tokens = textifiedMatch.slots[label]
+          const tokenTexts = tokens.map(token => token.text)
+          const joinedTokenTexts = tokenTexts.join(', ')
+          textifiedMatch[label] = joinedTokenTexts
+        })
+        return textifiedMatch
+      })
+      return textifiedMatches
+    },
+    addSlotContentRepresentations: function(matches) {
+      const modifiedMatches = matches.map(match => {
+        const slotRepresentations = []
+        const slotLabels = Object.keys(match.slots)
+        slotLabels.forEach(label => {
+          const tokens = match.slots[label]
+          const tokenTexts = tokens.map(token => token.text)
+          const joinedTokenTexts = tokenTexts.join(', ')
+          let repr = ''
+          if (this.noSlotLabels) {
+            repr = `[${joinedTokenTexts}]`
+          } else {
+            repr = `${label}: [${joinedTokenTexts}]`
+          }
+          slotRepresentations.push(repr)
+        })
+        const joinedSlotRepresentations = slotRepresentations.join(' ')
+        match.slotContent = joinedSlotRepresentations
+        return match
+      })
+      return modifiedMatches
+    },
     toggle(row) {
         this.$refs.table.toggleDetails(row)
     },
     isvalidated(row) {
       return row.validationStatus === true
     },
-    // getAnnotationColor(annotation) {
-    //   if (annotation.label == 'slot1') {
-    //     return '#42b0f4'
-    //   }
-    // }
-  }
+    getSpanClasses(span) {
+      if (span.annotationIds.length > 0) {
+        return ['annotated-span']
+      } else {
+        return []
+      }
+    }
+  },
 }
 </script>
 
 <style>
-  .span-class {
+  .annotated-span {
     outline: 1px solid black;
   }
 </style>
