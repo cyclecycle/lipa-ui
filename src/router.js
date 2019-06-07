@@ -61,7 +61,7 @@ export default new Router({
       component: () => import('./views/CalculatePatternView.vue'),
       props: (route) => {
         return {
-          posTrainingExampleId: Number(route.query.pos_example_id)
+          posMatchId: Number(route.query.pos_match_id)
         }
       },
     },

@@ -8,18 +8,15 @@ import util from './util';
 
 
 const databasePostingHelpersMixin = {
-  postTrainingExample(trainingExample) {
-    // database = this
-    // const query = 'training_examples/'
-    // const trainingExampleJSON = JSON.stringify(trainingExample)
-    // const payload = {
-    //   data: trainingExampleJSON
-    // } 
-    // return database.post(query, trainingExampleJSON)
-    return new Promise((resolve, reject) => {
-      console.log('Post training example')
-      resolve()
-    })
+  postMatch(match, sentenceId) {
+    const database = this
+    const query = 'matches/'
+    const matchJSON = JSON.stringify({slots: match})
+    const matchRow = {
+      sentence_id: sentenceId,
+      data: matchJSON,
+    } 
+    return database.post(query, matchRow)
   }
 }
 

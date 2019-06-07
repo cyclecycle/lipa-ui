@@ -85,10 +85,11 @@ class Database {
   }
 
   post(queryString, payload) {
-    const queryUrl = this.queryUrl(queryString)  
+    const queryUrl = this.queryUrl(queryString)
     return axios.post(queryUrl, payload)
       .then(response => {
-        const data = JSON.parse(response.data)
+        let data = response.data
+        data = this.parseJsonFields(data)
         return data
       })
       .catch(e => {
@@ -109,4 +110,4 @@ class Database {
   }
 }
 
-export default Database
+export default Database;

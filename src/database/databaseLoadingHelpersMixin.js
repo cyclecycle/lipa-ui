@@ -59,6 +59,26 @@ const databaseLoadingHelpersMixin = {
         target.patterns = patterns
       })
   },
+  loadRowsByQuery(query, target, targetAttribute) {
+    const database = this
+    database.get(query)
+      .then(items => {
+        let unpackedItems = util.unpackValues(items, 'data')
+        target[targetAttribute] = unpackedItems
+      })
+  },
+  loadRowsByIds(table, ids, target, targetAttribute) {
+    const database = this
+    ids.forEach(id => {
+      const query = `${table}/?id=${id}`
+      database.get(query)
+        .then(items => {
+          const item = items[0]
+          let unpackedItem = util.unpackValues(item, 'data')
+          target[targetAttribute].push(unpackedItem)
+        })
+    })
+  },
 }
 
 export default databaseLoadingHelpersMixin;
