@@ -1,7 +1,11 @@
 const config = {
   env: 'test',
   databaseRestUrl: 'http://localhost:8085/',
-  databaseJsonFields: ['data'], // Fields which require JSON parsing
+  databaseJsonFields: [ // Fields which require JSON parsing
+    'data',
+    'match_data',
+    'sentence_data'
+  ], 
   patternApiUrl: 'http://localhost:5000/',
 };
 

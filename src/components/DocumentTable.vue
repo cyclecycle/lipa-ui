@@ -1,7 +1,7 @@
 <template>
   <b-table
-    :data='data'
-    :columns='columns'
+    :data="documents"
+    :columns="columns"
     selectable
     @select="rowSelected"
   >
@@ -12,7 +12,7 @@
 export default {
   name: 'DocumentTable',
   props: {
-    patterns: Array
+    documents: Array
   },
   data() {
     return {
@@ -27,8 +27,10 @@ export default {
             numeric: true,
         },
         {
-            field: 'title',
-            label: 'Title',
+            field: 'source_document_id',
+            label: 'Source document ID',
+            width: '200',
+            numeric: true,
         },
         {
             field: 'n_sentences',

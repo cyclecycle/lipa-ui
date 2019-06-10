@@ -48,7 +48,6 @@ class Database {
   }
 
   parseJsonFields(item) {
-    // All fields named 'data' are encoded in JSON formatc
     const parsedItem = {}
     Object.keys(item).forEach(key => {
       const keyIsJsonField = this.jsonFields.includes(key)

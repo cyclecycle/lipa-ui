@@ -24,17 +24,35 @@
         </div>
       </div>
     </div>
-    <DocumentTable />
+    <DocumentTable
+      :documents="documents"
+    />
   </div>
 </template>
 
 <script>
 import DocumentTable from '../components/DocumentTable.vue'
+import database from '../database'
 
 export default {
   name: 'DocumentsView',
   components: {
     DocumentTable,
+  },
+  data() {
+    return {
+      documents: [],
+    }
+  },
+  mounted() {
+    database.loadByQuery('documents_view', this, 'documents')
+  },
+  methods: {
+    isLoaded: function () {
+      const documentsLoaded = this.documents.length > 0
+      console.log(this.documents)
+      return documentsLoaded
+    },
   }
 }
 </script>

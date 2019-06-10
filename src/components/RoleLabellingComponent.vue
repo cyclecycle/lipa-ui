@@ -45,7 +45,7 @@
 
 <script>
 import AnnotatedText from 'vue-annotated-text'
-import util from '../util/util'
+import util from '../util'
 
 export default {
   name: 'RoleLabellingComponent',

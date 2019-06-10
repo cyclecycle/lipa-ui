@@ -63,7 +63,6 @@ const databaseLoadingHelpersMixin = {
     const database = this
     database.get(query)
       .then(items => {
-        console.log(items)
         let unpackedItems = util.unpackValues(items, 'data')
         target[targetAttribute] = unpackedItems
       })

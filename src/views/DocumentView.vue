@@ -1,34 +1,80 @@
 <template>
   <div v-if="isLoaded()">
     <div class="heading">Document ID {{ documentId }}</div>
-<!--       <b-tooltip
-        v-if="activeSentenceId === null"
-        label="Select a sentence to create a training example"
-        position="is-right"
-      > -->
-        <b-button
-          color="primary"
-          :disabled="activeSentenceId === null"
-        >
-          <router-link :to="createTrainingExampleRoute()">
-            Create training example
-          </router-link>
-        </b-button>
-      <!-- </b-tooltip> -->
-    <section v-for="section in document.sections">
-      <AnnotatedText
-        :text="section.text"
-        :annotations="getSectionSentences(section.name)"
-        :getSpanClasses="getAnnotatedTextSpanClasses"
-        :spanEvents="annotatedTextSpanEvents"
-      />
-    </section>
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <section v-for="section in document.sections">
+            <div
+              v-for="sentence in getSectionSentences(section.name)"
+              v-on:click="activateSentence(sentence.id)"
+              class="sentence-container"
+            >
+              <AnnotatedText
+                :text="sentence.text"
+                :annotations="getSentenceAnnotations(sentence.id)"
+                :getSpanClasses="getAnnotatedTextSpanClasses"
+                :spanEvents="annotatedTextSpanEvents"
+                class="sentence"
+              />
+            </div>
+          </section>
+        </div>
+        <div class="column">
+        <b-message :active="true">
+          <div class="heading">Sentence</div>
+          <div v-if="activeSentenceId !== null" class="pb">
+            <div>
+              ID: {{ activeSentenceId }}
+            </div>
+            <div>
+              Text: "{{ activeSentence.text }}"
+            </div>
+          </div>
+          <b-tooltip
+            :active="activeSentenceId === null"
+            label="Select a sentence to create a training example"
+            position="is-left"
+            class="pt"
+          >
+            <router-link :to="createTrainingExampleRoute()">
+              <b-button
+                color="primary"
+                :disabled="activeSentenceId === null"
+              >
+                  Create training example
+              </b-button>
+            </router-link>
+          </b-tooltip>
+        </b-message>
+        <b-message :active="true">
+          <div class="heading">Pattern match</div>
+          <section v-for="match in activeMatches" class="box pt">
+            <div>
+              Match ID: {{ match.match_id }}
+            </div>
+            <div>
+              Content:
+              <div style="padding-left: 20px">
+                {{ match.content }}
+              </div>
+            </div>
+            <div>
+              Pattern ID: {{ match.pattern_id }}
+            </div>
+            <div>
+              Pattern Name: {{ match.pattern_name }}
+            </div>
+          </section>
+        </b-message>
+        </div>
+      </div>
   </div>
 </template>
 
 <script>
 import AnnotatedText from 'vue-annotated-text'
 import database from '../database'
+import util from '../util'
 
 export default {
   name: 'DocumentView',
@@ -46,11 +92,33 @@ export default {
       annotatedTextSpanEvents: {
         click: this.onSpanClick,
       },
+      matches: [],
+      activeAnnotations: [],
     }
+  },
+  computed: {
+    activeSentence() {
+      if (this.activeSentenceId !== null) {
+        const sentence = util.objById(this.sentences, this.activeSentenceId)
+        return sentence
+      } else {
+        return {}
+      }
+    },
+    activeMatches() {
+      const matchIds = this.activeAnnotations.map(annotation => annotation.matchId)
+      let matches = this.matches.filter(match => matchIds.includes(match.match_id))
+      matches = matches.map(match => {
+        match.content = util.getSlotsContent(match.match_data.slots)
+        return match
+      }) 
+      return matches
+    },
   },
   mounted() {
     database.loadDocument(this, this.documentId)
     database.loadSentences(this, this.documentId)
+    database.loadByQuery(`pattern_matches_view/?document_id=${this.documentId}`, this, 'matches')
   },
   methods: {
     isLoaded: function() {
@@ -65,6 +133,31 @@ export default {
       })
       return sentences
     },
+    getSentenceAnnotations: function(sentenceId) {
+      const matches = this.matches.filter(match => {
+        return match.sentence_id == sentenceId
+      })
+      let annotations = []
+      matches.forEach(match => {
+        const matchId = match.match_id
+        const patternId = match.pattern_id
+        const slots = match.match_data.slots
+        const slotLabels = Object.keys(slots)
+        slotLabels.forEach(slotLabel => {
+          let slotTokens = [...slots[slotLabel]]
+          slotTokens = slotTokens.forEach(slotToken => {
+            const annotation = slotToken
+            annotation.label = slotLabel
+            annotation.patternId = patternId
+            annotation.matchId = matchId
+            const annotationId = `${patternId}-${slotLabel}`
+            annotation.id = annotationId
+            annotations.push(slotToken)
+          })
+        })
+      })
+      return annotations
+    },
     activateSentence: function (sentenceId) {
       this.activeSentenceId = sentenceId
     },
@@ -74,24 +167,47 @@ export default {
     },
     getAnnotatedTextSpanClasses: function(span) {
       if (span.annotationIds.length > 0) {
-        return ['annotated-sentence-span']
+        return ['annotated-span']
       } else {
         return []
       }
     },
+    matchById: function(matchId) {
+      const match = util.objById(this.matches, matchId)
+      return match
+    },
     onSpanClick: function(e, annotations) {
-      const sentenceId = annotations[0].id
-      this.activateSentence(sentenceId)
+      this.activeAnnotations = annotations
     },
   }
 }
 </script>
 
 <style>
-.annotated-sentence-span:hover {
+.annotated-span {
   outline: 1px solid black;
 }
-.annotated-sentence-span-active {
+.annotated-span:hover {
   outline: 2px solid black !important;
+  cursor: pointer;
+}
+.sentence-container {
+  display: inline-block;
+}
+.sentence {
+  margin-right: 0.25em;
+}
+.sentence:hover {
+  cursor: pointer;
+  background-color: hsl(171, 100%, 90%);
+}
+.sentence-active {
+  outline: 2px solid black !important;
+}
+.pb {
+  padding-bottom: 10px;
+}
+.pt {
+  padding-top: 10px;
 }
 </style>

@@ -33,6 +33,7 @@
 
 <script>
 import AnnotatedText from 'vue-annotated-text'
+import util from '../util'
 
 
 export default {
@@ -135,48 +136,12 @@ export default {
     },
     tableData: function() {
       let matches = this.matches
-      matches = this.textifyMatchTokens(matches)
-      matches = this.addSlotContentRepresentations(matches)
+      matches = util.textifyMatchTokens(matches)
+      matches = util.addSlotContentRepresentations(matches)
       return matches
     },
   },
   methods: {
-    textifyMatchTokens: function(matches) {
-      const textifiedMatches = matches.map(match => {
-        const slotLabels = Object.keys(match.slots)
-        const textifiedMatch = {...match}
-        slotLabels.forEach(label => {
-          const tokens = textifiedMatch.slots[label]
-          const tokenTexts = tokens.map(token => token.text)
-          const joinedTokenTexts = tokenTexts.join(', ')
-          textifiedMatch[label] = joinedTokenTexts
-        })
-        return textifiedMatch
-      })
-      return textifiedMatches
-    },
-    addSlotContentRepresentations: function(matches) {
-      const modifiedMatches = matches.map(match => {
-        const slotRepresentations = []
-        const slotLabels = Object.keys(match.slots)
-        slotLabels.forEach(label => {
-          const tokens = match.slots[label]
-          const tokenTexts = tokens.map(token => token.text)
-          const joinedTokenTexts = tokenTexts.join(', ')
-          let repr = ''
-          if (this.noSlotLabels) {
-            repr = `[${joinedTokenTexts}]`
-          } else {
-            repr = `${label}: [${joinedTokenTexts}]`
-          }
-          slotRepresentations.push(repr)
-        })
-        const joinedSlotRepresentations = slotRepresentations.join(' ')
-        match.slotContent = joinedSlotRepresentations
-        return match
-      })
-      return modifiedMatches
-    },
     toggle(row) {
         this.$refs.table.toggleDetails(row)
     },
