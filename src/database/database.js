@@ -1,4 +1,8 @@
 import axios from 'axios';
+import config from '../config';
+import util from '../util';
+
+const fieldsToUnpack = config.databaseUnpackFields
 
 
 class Database {
@@ -68,7 +72,10 @@ class Database {
     return axios.get(queryUrl)
       .then(response => {
         const items = response.data
-        const parsedItems = items.map(item => this.parseJsonFields(item))
+        let parsedItems = items.map(item => this.parseJsonFields(item))
+        fieldsToUnpack.forEach(field => {
+          parsedItems = util.unpackValues(parsedItems, field)
+        })
         console.log(parsedItems)
         return parsedItems
       })

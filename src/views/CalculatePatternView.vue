@@ -69,29 +69,33 @@ export default {
       const posMatchesLoaded = this.posMatches.length > 0
       const negMatchesLoaded = this.negMatches.length == this.negMatchIds.length
       const isLoaded = posMatchesLoaded && negMatchesLoaded
-      // console.log('pos matches:', this.posMatches)
-      // console.log('neg matches:', this.negMatches)
       return isLoaded
     },
     loadPosMatches: function() {
       const posMatchIds = [this.posMatchId]
-      database.loadRowsByIds('matches', posMatchIds, this, 'posMatches')
+      const loadOnto = this
+      const targetAttribute = 'posMatches'
+      database.loadByIds('matches', posMatchIds, loadOnto, targetAttribute)
     },
     loadNegMatches: function() {
+      const loadOnto = this
+      const targetAttribute = 'negMatches'
       const negMatchIds = this.negMatchIds
-      database.loadRowsByIds('matches', negMatchIds, this, 'negMatches')
+      database.loadByIds('matches', negMatchIds, loadOnto, targetAttribute)
     },
     calculatePattern: function() {
       // Hit API, listen to status.
       this.submitted = true
       // If just pos match, build pattern. else refine
-      console.log(patternAPI)
       const buildPatternData = {
         pos_match_id: this.posMatchId
       }
       patternAPI.socket.emit('build_pattern', buildPatternData)
       const patternAPIMessageLog = this.patternAPIMessageLog
       patternAPI.socket.on('message', function (message) {
+        patternAPIMessageLog.push(message)
+      })
+      patternAPI.socket.on('error', function (message) {
         patternAPIMessageLog.push(message)
       })
       patternAPI.socket.on('build_pattern_success', function (data) {

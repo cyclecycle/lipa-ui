@@ -7,7 +7,6 @@ database.loadDocument(this, documentId)
 import util from '../util';
 import config from '../config';
 
-const fieldsToUnpack = config.databaseUnpackFields
 
 const databaseLoadingHelpersMixin = {
   loadOneByQuery (query, target, targetAttribute) {
@@ -15,9 +14,6 @@ const databaseLoadingHelpersMixin = {
     database.get(query)
       .then(items => {
         let item = items[0]
-        fieldsToUnpack.forEach(field => {
-          item = util.unpackValues(item, field)
-        })
         target[targetAttribute] = item
       })
   },
@@ -25,11 +21,7 @@ const databaseLoadingHelpersMixin = {
     const database = this
     database.get(query)
       .then(items => {
-        let unpackedItems = items
-        fieldsToUnpack.forEach(field => {
-          unpackedItems = util.unpackValues(unpackedItems, field)
-        })
-        target[targetAttribute] = unpackedItems
+        target[targetAttribute] = items
       })
   },
   loadById (table, id, target, targetAttribute) {
@@ -38,7 +30,6 @@ const databaseLoadingHelpersMixin = {
     database.get(query)
       .then(items => {
         let item = items[0]
-        item = util.unpackValues(item, 'data')
         target[targetAttribute] = item
       })
   },
@@ -48,9 +39,8 @@ const databaseLoadingHelpersMixin = {
       const query = `${table}/?id=${id}`
       database.get(query)
         .then(items => {
-          const item = items[0]
-          let unpackedItem = util.unpackValues(item, 'data')
-          target[targetAttribute].push(unpackedItem)
+          let item = items[0]
+          target[targetAttribute].push(item)
         })
     })
   },

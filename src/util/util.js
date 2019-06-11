@@ -16,7 +16,7 @@ function textifyMatchTokens (matches) {
 function addSlotContentRepresentations (matches, kwargs) {
   const modifiedMatches = matches.map(match => {
     const slotsContent = getSlotsContent(match.slots, kwargs)
-    match.slotContent = joinedSlotRepresentations
+    match.slotContent = slotsContent
     return match
   })
   return modifiedMatches

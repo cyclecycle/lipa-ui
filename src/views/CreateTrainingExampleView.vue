@@ -41,8 +41,14 @@ export default {
     };
   },
   mounted() {
-    database.loadSentence(this, this.sentenceId)
-    database.loadTokens(this, this.sentenceId)
+    const sentenceId = this.sentenceId
+    const loadOnto = this
+    const sentenceTargetAttribute = 'sentence'
+    const tokensTargetAttribute = 'tokens'
+    const sentenceQuery = `sentences/?id=${sentenceId}`
+    const tokensQuery = `tokens/?sentence_id=${sentenceId}`
+    database.loadOneByQuery(sentenceQuery, loadOnto, sentenceTargetAttribute)
+    database.loadByQuery(tokensQuery, loadOnto, tokensTargetAttribute)
   },
   methods: {
     isLoaded: function() {
@@ -69,7 +75,6 @@ export default {
         .then((matchRow) => {
           const matchId = matchRow.id
           console.log('match id:', matchId)
-          console.log(matchId)
           this.loading = !this.loading
           router.push({
              path: '/calculate-pattern', query: { pos_match_id: matchId }
