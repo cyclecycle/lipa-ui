@@ -4,7 +4,7 @@ they can be called like:
 database.loadDocument(this, documentId)
 */
 
-import util from './util';
+import util from '../util';
 
 
 const databasePostingHelpersMixin = {

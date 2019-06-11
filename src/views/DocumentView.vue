@@ -109,16 +109,24 @@ export default {
       const matchIds = this.activeAnnotations.map(annotation => annotation.matchId)
       let matches = this.matches.filter(match => matchIds.includes(match.match_id))
       matches = matches.map(match => {
-        match.content = util.getSlotsContent(match.match_data.slots)
+        match.content = util.getSlotsContent(match.slots)
         return match
       }) 
       return matches
     },
   },
   mounted() {
-    database.loadDocument(this, this.documentId)
-    database.loadSentences(this, this.documentId)
-    database.loadByQuery(`pattern_matches_view/?document_id=${this.documentId}`, this, 'matches')
+    const documentId = this.documentId
+    const loadOnto = this
+    const documentTargetAttribute = 'document'
+    const sentencesTargetAttribute = 'sentences'
+    const matchesTargetAttribute = 'matches'
+    const loadDocumentQuery = `documents/?id=${documentId}`
+    const loadSentencesQuery = `sentences/?document_id=${documentId}`
+    const loadMatchesQuery = `pattern_matches_view/?document_id=${documentId}`
+    database.loadOneByQuery(loadDocumentQuery, loadOnto, documentTargetAttribute)
+    database.loadByQuery(loadSentencesQuery, loadOnto, sentencesTargetAttribute)
+    database.loadByQuery(loadMatchesQuery, loadOnto, matchesTargetAttribute)
   },
   methods: {
     isLoaded: function() {
@@ -141,7 +149,7 @@ export default {
       matches.forEach(match => {
         const matchId = match.match_id
         const patternId = match.pattern_id
-        const slots = match.match_data.slots
+        const slots = match.slots
         const slotLabels = Object.keys(slots)
         slotLabels.forEach(slotLabel => {
           let slotTokens = [...slots[slotLabel]]

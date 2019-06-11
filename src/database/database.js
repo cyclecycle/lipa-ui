@@ -64,10 +64,12 @@ class Database {
 
   get(queryString) {
     const queryUrl = this.queryUrl(queryString)
+    console.log(queryUrl)
     return axios.get(queryUrl)
       .then(response => {
         const items = response.data
         const parsedItems = items.map(item => this.parseJsonFields(item))
+        console.log(parsedItems)
         return parsedItems
       })
       .catch(e => {

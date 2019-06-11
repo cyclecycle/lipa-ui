@@ -1,4 +1,4 @@
-import config from '../config/config';
+import config from '../config';
 import Database from './database';
 import databaseLoadingHelpersMixin from './databaseLoadingHelpersMixin';
 import databasePostingHelpersMixin from './databasePostingHelpersMixin';
