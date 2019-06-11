@@ -1,6 +1,7 @@
 const config = {
   env: 'test',
   databaseRestUrl: 'http://localhost:8085/',
+  databasePath: '/home/nickm/Documents/dev/lipa-db/databases/test.db',
   patternApiUrl: 'http://localhost:5000/',
   databaseJsonFields: [ // Fields which require JSON parsing
     'data',

@@ -50,6 +50,8 @@
 </template>
 
 <script>
+const sqlite3 = require('sqlite3').verbose()
+
 export default {
   data () {
     return {

@@ -1,7 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import database from '@/database'
 import 'jest-extended'
+import config from '@/config';
+import sqlite from 'sqlite';
 
+const dbPath = config.databasePath
 
 describe('Database class', () => {
   expect.assertions(1)
@@ -14,5 +17,22 @@ describe('Database class', () => {
   })
   it('Serves mock data in mock mode', () => {
     
+  })
+})
+
+describe('Loads sqlite database', () => {
+  // expect.assertions(1)
+  it ('Connects and queries', () => {
+    return sqlite.open(dbPath, { Promise })
+      .then(db => {
+        console.log(db)
+        return db
+      })
+      .then(db => {
+        return db.get('select * from documents where id = ?', 1)
+      })
+      .then(result => {
+        console.log(result)
+      })
   })
 })

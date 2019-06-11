@@ -68,7 +68,7 @@ class Database {
 
   get(queryString) {
     const queryUrl = this.queryUrl(queryString)
-    console.log(queryUrl)
+    // console.log(queryUrl)
     return axios.get(queryUrl)
       .then(response => {
         const items = response.data
@@ -76,7 +76,7 @@ class Database {
         fieldsToUnpack.forEach(field => {
           parsedItems = util.unpackValues(parsedItems, field)
         })
-        console.log(parsedItems)
+        // console.log(parsedItems)
         return parsedItems
       })
       .catch(e => {
