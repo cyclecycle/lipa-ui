@@ -20,7 +20,8 @@ const databaseRequestHelpersMixin = {
     return params
   },
   buildRecursiveRequest (args) {
-    const { queryUrl, startRow, itemsHandler, resolve } = args
+    const { queryUrl, itemsHandler, resolve } = args
+    let { startRow } = args
     const chunkSize = databaseLoadingChunkSize
     const endRow = util.getEndChunkValue(startRow, chunkSize)
     const params = this.buildRequestParamsObject(startRow, endRow)
@@ -28,10 +29,10 @@ const databaseRequestHelpersMixin = {
       .then(response => {
         let items = response.data
         items = itemsHandler(items)
-        const nextStartRow = util.incrementStartChunkValue(startRow, endRow)
+        let startRow = util.incrementStartChunkValue(startRow, endRow)
         const nextRequestArgs = {
           queryUrl,
-          nextStartRow,
+          startRow,
           itemsHandler,
           resolve,
         }
@@ -55,26 +56,26 @@ const databaseRequestHelpersMixin = {
       })
     return request
   },
-  getRowsIteratively (queryUrl) {
-    const rows = []
-    let wrappedItemsHandler = (items) => {
-      items = this.itemsHandler(items)
-      items.forEach(item => {
-        rows.push(item)
-      })
-    }
-    const startRow = 0
-    const requestPromise = new Promise((resolve, reject) => {
-      const requestArgs = {
-        queryUrl,
-        startRow,
-        wrappedItemsHandler,
-        resolve,
-      }
-      const recursiveRequest = this.buildRecursiveRequest(requestArgs)
-    })
-    return requestPromise
-  },
+  // getRowsIteratively (queryUrl) {
+  //   const rows = []
+  //   let wrappedItemsHandler = (items) => {
+  //     items = this.itemsHandler(items)
+  //     items.forEach(item => {
+  //       rows.push(item)
+  //     })
+  //   }
+  //   const startRow = 0
+  //   const requestPromise = new Promise((resolve, reject) => {
+  //     const requestArgs = {
+  //       queryUrl,
+  //       startRow,
+  //       wrappedItemsHandler,
+  //       resolve,
+  //     }
+  //     const recursiveRequest = this.buildRecursiveRequest(requestArgs)
+  //   })
+  //   return requestPromise
+  // },
 }
 
 export default databaseRequestHelpersMixin;

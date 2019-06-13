@@ -125,12 +125,8 @@ export default {
     const loadSentencesQuery = `sentences/?document_id=${documentId}`
     const loadMatchesQuery = `pattern_matches_view/?document_id=${documentId}`
     database.loadOneByQuery(loadDocumentQuery, loadOnto, documentTargetAttribute)
-    database.loadByQuery(loadSentencesQuery, loadOnto, sentencesTargetAttribute)
-    database.loadByQuery(loadMatchesQuery, loadOnto, matchesTargetAttribute)
-    // database.streamGet(loadMatchesQuery)
-    //   .then(response => {
-    //     console.log(response)
-    //   })
+    database.loadByQueryIteratively(loadSentencesQuery, loadOnto, sentencesTargetAttribute)
+    database.loadByQueryIteratively(loadMatchesQuery, loadOnto, matchesTargetAttribute)
   },
   methods: {
     isLoaded: function() {

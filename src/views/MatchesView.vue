@@ -23,7 +23,7 @@ export default {
     }
   },
   mounted() {
-    database.loadByQuery('matches', this, 'matches')
+    database.loadByQueryIteratively('matches_view', this, 'matches')
   },
   methods: {
     isLoaded: function() {

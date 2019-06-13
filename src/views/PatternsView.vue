@@ -31,7 +31,7 @@ export default {
     }
   },
   mounted() {
-    database.loadByQuery('patterns', this, 'patterns')
+    database.loadByQueryIteratively('patterns_view', this, 'patterns')
   },
   methods: {
     isLoaded: function() {
