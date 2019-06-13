@@ -11,6 +11,7 @@ const config = {
     'data',
     'match_data',
   ],
+  databaseLoadingChunkSize: 10,
 };
 
 export default config;

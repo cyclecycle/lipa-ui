@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div>{{ documents }}
     <div class="level">
       <div class="level-left">
         <div class="level-item">
@@ -45,7 +45,10 @@ export default {
     }
   },
   mounted() {
-    database.loadByQuery('documents_view', this, 'documents')
+    const loadOnto = this
+    const loadOntoAttribute = 'documents'
+    const loadDocumentsQuery = 'documents_view'
+    database.loadByQueryIteratively(loadDocumentsQuery, loadOnto, loadOntoAttribute)
   },
   methods: {
     isLoaded: function () {

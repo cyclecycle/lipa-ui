@@ -25,6 +25,23 @@ const databaseLoadingHelpersMixin = {
         target[targetAttribute] = items
       })
   },
+  loadByQueryIteratively (queryString, loadOntoTarget, targetAttribute) {
+    const queryUrl = this.queryUrl(queryString)
+    const startRow = 0
+    let itemsHandler = (items) => {
+      this.itemsHandler(items, loadOntoTarget, targetAttribute)
+    }
+    const requestPromise = new Promise((resolve, reject) => {
+      const recursiveRequestArgs = {
+        queryUrl,
+        startRow,
+        itemsHandler,
+        resolve,
+      }
+      this.buildRecursiveRequest(recursiveRequestArgs)
+    })
+    return requestPromise
+  },
   loadById (table, id, target, targetAttribute) {
     const query = `${table}/?id=${id}`
     const database = this

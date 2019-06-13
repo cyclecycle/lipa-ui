@@ -6,7 +6,9 @@ database.loadDocument(this, documentId)
 
 import axios from 'axios';
 import util from '../util';
+import config from '../config';
 
+const { databaseLoadingChunkSize } = config
 
 const databaseRequestHelpersMixin = {
   buildRequestParamsObject (startRow, endRow) {
@@ -17,53 +19,59 @@ const databaseRequestHelpersMixin = {
     }
     return params
   },
-  buildRecursiveRequest (queryUrl, startRow, chunkSize, resolve, rows) {
+  buildRecursiveRequest (args) {
+    const { queryUrl, startRow, itemsHandler, resolve } = args
+    const chunkSize = databaseLoadingChunkSize
     const endRow = util.getEndChunkValue(startRow, chunkSize)
     const params = this.buildRequestParamsObject(startRow, endRow)
     const request = axios.get(queryUrl, params)
       .then(response => {
-        const items = response.data
-        items.forEach(item => {
-          // console.log(item)
-          rows.push(items)
-        })
+        let items = response.data
+        items = itemsHandler(items)
         const nextStartRow = util.incrementStartChunkValue(startRow, endRow)
-        const nextRequest = this.buildRecursiveRequest(
+        const nextRequestArgs = {
           queryUrl,
           nextStartRow,
-          chunkSize,
+          itemsHandler,
           resolve,
-          rows,
-        )
+        }
+        const nextRequest = this.buildRecursiveRequest(nextRequestArgs)
         return nextRequest
       })
       .catch((e) => {
         if (e.response !== undefined) {
           if (e.response.status === 416) {
-            resolve(rows)
+            resolve()
+          } else {
+            throw e
           }
-        }
-        if (e.message === 'Network Error') {
-          console.log(e)
-          // pass
+        } else {
+          if (e.message === 'Network Error') {
+            console.log(e)
+          } else {
+            throw e
+          }
         }
       })
     return request
   },
-  getRowsIteratively (queryUrl, chunkSize) {
-    if (chunkSize === undefined) {
-      chunkSize = 2
+  getRowsIteratively (queryUrl) {
+    const rows = []
+    let wrappedItemsHandler = (items) => {
+      items = this.itemsHandler(items)
+      items.forEach(item => {
+        rows.push(item)
+      })
     }
     const startRow = 0
-    const rows = []
     const requestPromise = new Promise((resolve, reject) => {
-      const recursiveRequest = this.buildRecursiveRequest(
+      const requestArgs = {
         queryUrl,
         startRow,
-        chunkSize,
+        wrappedItemsHandler,
         resolve,
-        rows,
-      )
+      }
+      const recursiveRequest = this.buildRecursiveRequest(requestArgs)
     })
     return requestPromise
   },

@@ -39,6 +39,13 @@ function unpackValues (intoItems, fromKey) {
   }
 }
 
+function unpackFields(items, fields) {
+  fields.forEach(field => {
+    items = unpackValues(items, field)
+  })
+  return items
+}
+
 function isArray(obj) {
   let isArray = null
   if (obj.length !== undefined) {
@@ -59,11 +66,21 @@ function getEndChunkValue (startChunk, chunkSize) {
   return endChunk;
 }
 
+function loadOnto(items, target, targetAttribute) {
+  if (target !== undefined && targetAttribute !== undefined) {
+    items.forEach(item => {
+      target[targetAttribute].push(item)
+    })
+  }
+}
+
 export default {
   objIds,
   objById,
   objsByIds,
   unpackValues,
+  unpackFields,
   incrementStartChunkValue,
   getEndChunkValue,
+  loadOnto,
 };

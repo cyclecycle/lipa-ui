@@ -65,37 +65,40 @@ class Database {
     return parsedItem
   }
 
+  itemsHandler(items, loadOntoTarget, targetAttribute) {
+    items = items.map(item => this.parseJsonFields(item))
+    items = util.unpackFields(items, fieldsToUnpack)
+    util.loadOnto(items, loadOntoTarget, targetAttribute)
+    return items
+  }
+
+  get(queryString) {
+    const queryUrl = this.queryUrl(queryString)
+    console.log(queryUrl)
+    return axios.get(queryUrl)
+      .then(response => {
+        let items = response.data
+        items = this.itemsHandler(items)
+        console.log(items)
+        return items
+      })
+      .catch(e => {
+        throw e
+      })
+  }
+
   // get(queryString) {
   //   const queryUrl = this.queryUrl(queryString)
-  //   console.log(queryUrl)
-  //   return axios.get(queryUrl)
-  //     .then(response => {
-  //       const items = response.data
-  //       console.log(items)
+  //   const chunkSize = 10
+  //   return this.getRowsIteratively(queryUrl, chunkSize)
+  //     .then((items) => {
   //       let parsedItems = items.map(item => this.parseJsonFields(item))
   //       fieldsToUnpack.forEach(field => {
   //         parsedItems = util.unpackValues(parsedItems, field)
   //       })
-  //       // console.log(parsedItems)
   //       return parsedItems
   //     })
-  //     .catch(e => {
-  //       throw e
-  //     })
   // }
-
-  get(queryString) {
-    const queryUrl = this.queryUrl(queryString)
-    const chunkSize = 10
-    return this.getRowsIteratively(queryUrl, chunkSize)
-      .then((items) => {
-        let parsedItems = items.map(item => this.parseJsonFields(item))
-        fieldsToUnpack.forEach(field => {
-          parsedItems = util.unpackValues(parsedItems, field)
-        })
-        return parsedItems
-      })
-  }
 
   delete(queryString) {
     const queryUrl = this.queryUrl(queryString)  
