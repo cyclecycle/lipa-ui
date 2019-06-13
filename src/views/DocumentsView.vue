@@ -1,5 +1,5 @@
 <template>
-  <div>{{ documents }}
+  <div>
     <div class="level">
       <div class="level-left">
         <div class="level-item">

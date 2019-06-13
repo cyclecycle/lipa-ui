@@ -22,11 +22,11 @@
     >
       Submit
     </b-button>
-    <div>
+    <section id="pattern-api-message-log">
       <p v-for="message in patternAPIMessageLog">
         <strong>{{ message }}</strong>
       </p>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -109,6 +109,9 @@ export default {
         } else {
           console.log('UI tried to call API again, but already have results')
         }
+      })
+      patternAPI.socket.on('find_matches_success', function (data) {
+        patternAPIMessageLog.push('Find matches success')
       })
     }
   }
