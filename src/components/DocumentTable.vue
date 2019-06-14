@@ -16,9 +16,6 @@ export default {
   },
   data() {
     return {
-      data: [
-        { 'source_document_id': 244567, id: 1, 'title': 'Document title', 'n_matches': 53, 'n_sentences': 14},
-      ],
       columns: [
         {
             field: 'id',

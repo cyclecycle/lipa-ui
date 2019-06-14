@@ -4,7 +4,8 @@
     <div>
       <PatternTable
         :patterns="patterns"
-        :loading="!isLoaded()"
+        :loading="loading"
+        :deleteRow="deletePattern"
       />
     </div>
   </div>
@@ -12,6 +13,7 @@
 
 <script>
 import database from '../database'
+import util from '../util'
 import PatternTable from '../components/PatternTable.vue'
 
 export default {
@@ -28,16 +30,38 @@ export default {
   data() {
     return {
       patterns: [],
+      loading: true,
     }
   },
   mounted() {
     database.loadByQueryIteratively('patterns_view', this, 'patterns')
+      .then(() => {
+        this.loading = false
+      })
   },
   methods: {
-    isLoaded: function() {
-      const patternsLoaded = this.patterns.length > 0
-      const isLoaded = patternsLoaded
-      return isLoaded
+    onDeleteSuccess(patternId) {
+      this.$toast.open({
+        message: `Deleted pattern: ID ${patternId}`,
+        type: 'is-dark',
+      })
+      this.patterns = util.removeObjById(this.patterns, patternId)
+    },
+    onDeleteFail(patternId) {
+      this.$toast.open({
+        message: `Something went wrong`,
+        type: 'is-warning',
+      })
+    },
+    deletePattern (patternId) {
+      database.deleteRow('patterns', patternId)
+        .then(e => {
+          if (e === undefined) {
+            this.onDeleteSuccess(patternId)
+          } else {
+            this.onDeleteFail(patternId)
+          }
+        })
     },
   }
 }

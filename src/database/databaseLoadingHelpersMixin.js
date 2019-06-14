@@ -38,7 +38,11 @@ const databaseLoadingHelpersMixin = {
         itemsHandler,
         resolve,
       }
-      this.buildRecursiveRequest(recursiveRequestArgs)
+      const recursiveRequest = this.buildRecursiveRequest(recursiveRequestArgs)
+        .catch(e => {
+          this.recursiveRequestErrorHandler(e, resolve)
+        })
+      return recursiveRequest
     })
     return requestPromise
   },

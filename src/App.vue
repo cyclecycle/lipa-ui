@@ -63,16 +63,16 @@ export default {
           name: 'Patterns'
         },
         {
+          path: '/matches',
+          name: 'Matches'
+        },
+        {
           path: '/documents',
           name: 'Documents',
           sublinks: [{
             path: '/sentences',
             name: 'Sentences',
           }],
-        },
-        {
-          path: '/matches',
-          name: 'Matches'
         },
       ],
     }

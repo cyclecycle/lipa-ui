@@ -19,9 +19,7 @@ const databaseRequestHelpersMixin = {
     }
     return params
   },
-  buildRecursiveRequest (args) {
-    const { queryUrl, itemsHandler, resolve } = args
-    let { startRow } = args
+  buildRecursiveRequest ({ queryUrl, startRow, itemsHandler, resolve }) {
     const chunkSize = databaseLoadingChunkSize
     const endRow = util.getEndChunkValue(startRow, chunkSize)
     const params = this.buildRequestParamsObject(startRow, endRow)
@@ -39,43 +37,33 @@ const databaseRequestHelpersMixin = {
         const nextRequest = this.buildRecursiveRequest(nextRequestArgs)
         return nextRequest
       })
-      .catch((e) => {
-        if (e.response !== undefined) {
-          if (e.response.status === 416) {
-            resolve()
-          } else {
-            throw e
-          }
-        } else {
-          if (e.message === 'Network Error') {
-            console.log(e)
-          } else {
-            throw e
-          }
-        }
-      })
+      // .catch(e => {
+      //   // Resolve the promise when there is an error signifies that there is no more content to collect
+      //   this.recursiveRequestErrorHandler(e, resolve)
+      // })
     return request
   },
-  // getRowsIteratively (queryUrl) {
-  //   const rows = []
-  //   let wrappedItemsHandler = (items) => {
-  //     items = this.itemsHandler(items)
-  //     items.forEach(item => {
-  //       rows.push(item)
-  //     })
-  //   }
-  //   const startRow = 0
-  //   const requestPromise = new Promise((resolve, reject) => {
-  //     const requestArgs = {
-  //       queryUrl,
-  //       startRow,
-  //       wrappedItemsHandler,
-  //       resolve,
-  //     }
-  //     const recursiveRequest = this.buildRecursiveRequest(requestArgs)
-  //   })
-  //   return requestPromise
-  // },
+  recursiveRequestErrorHandler (e, resolve) {
+    if (e.response !== undefined) {
+      if (e.response.status === 404) { // Not found. No results for the given query
+        console.log('caught 404')
+        resolve(e)
+      }
+      if (e.response.status === 416) { // Range not satisfiable
+        console.log('gonna resolve')
+        resolve()
+      } else {
+        console.log(e)
+      }
+    } else {
+      if (e.message === 'Network Error') {
+        resolve()
+        // console.log(e)
+      } else {
+        console.log(e)
+      }
+    }
+  },
 }
 
 export default databaseRequestHelpersMixin;

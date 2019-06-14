@@ -3,7 +3,7 @@
     <div class="title">Matches</div>
     <MatchTable
       :matches="matches"
-      :loading="!isLoaded()"
+      :loading="loading"
     />
   </div>
 </template>
@@ -14,24 +14,30 @@ import MatchTable from '../components/MatchTable.vue'
 
 export default {
   name: 'MatchesView',
+  props: {
+    patternId: {
+      type: Number,
+      default: NaN,
+    }
+  },
   components: {
     MatchTable
   },
   data() {
     return {
       matches: [],
+      loading: true,
     }
   },
   mounted() {
-    database.loadByQueryIteratively('matches_view', this, 'matches')
+    let matchesQuery = 'pattern_matches_view'
+    if (!isNaN(this.patternId)) {
+      matchesQuery = matchesQuery + `/?pattern_id=${this.patternId}`
+    }
+    database.loadByQueryIteratively(matchesQuery, this, 'matches')
+      .then(() => {
+        this.loading = false
+      })
   },
-  methods: {
-    isLoaded: function() {
-      const matchesLoaded = this.matches.length > 0
-      const isLoaded = matchesLoaded
-      console.log(this.matches)
-      return isLoaded
-    },
-  }
 }
 </script>

@@ -18,6 +18,13 @@ function objsByIds (objs, ids) {
   return filtered
 }
 
+function removeObjById (objs, id) {
+  const filtered = objs.filter(obj => {
+    return obj.id !== id
+  })
+  return filtered
+}
+
 function unpackValues (intoItems, fromKey) {
   const unpack = (item, fromKey) => {
     let newItem = {...item}
@@ -78,6 +85,7 @@ export default {
   objIds,
   objById,
   objsByIds,
+  removeObjById,
   unpackValues,
   unpackFields,
   incrementStartChunkValue,

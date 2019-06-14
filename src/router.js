@@ -34,6 +34,11 @@ export default new Router({
       path: '/matches',
       name: 'matches-view',
       component: () => import('./views/MatchesView.vue'),
+      props: (route) => {
+        return {
+          patternId: Number(route.query.pattern_id)
+        }
+      },
     },
     {
       path: '/document',

@@ -83,25 +83,12 @@ class Database {
         return items
       })
       .catch(e => {
-        throw e
+        console.log(e)
       })
   }
 
-  // get(queryString) {
-  //   const queryUrl = this.queryUrl(queryString)
-  //   const chunkSize = 10
-  //   return this.getRowsIteratively(queryUrl, chunkSize)
-  //     .then((items) => {
-  //       let parsedItems = items.map(item => this.parseJsonFields(item))
-  //       fieldsToUnpack.forEach(field => {
-  //         parsedItems = util.unpackValues(parsedItems, field)
-  //       })
-  //       return parsedItems
-  //     })
-  // }
-
   delete(queryString) {
-    const queryUrl = this.queryUrl(queryString)  
+    const queryUrl = this.queryUrl(queryString)
     return axios.delete(queryUrl)
       .catch(e => {
         throw e
