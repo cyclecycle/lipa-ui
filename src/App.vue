@@ -9,24 +9,24 @@
             <!-- <a class="nav-item is-tab is-active">Projects</a> -->
           </div>
           <div class="nav-right">
-            <div class="nav-item">
-              <b-dropdown aria-role="list" position="is-bottom-left">
-                <button class="button is-primary" slot="trigger">
-                    <span>Actions</span>
-                    <b-icon icon="menu-down"></b-icon>
-                </button>
-
-                <b-dropdown-item aria-role="listitem">
-                  Import documents
-                </b-dropdown-item>
-                <b-dropdown-item aria-role="listitem" @click="refreshMatches">
-                  Refresh matches
-                </b-dropdown-item>
-                <b-dropdown-item aria-role="listitem">
-                  Read the docs
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
+            <a class="nav-item is-tab">
+              <b-icon
+                icon="file-upload"
+              >
+              </b-icon>
+            </a>
+            <a class="nav-item is-tab">
+              <b-icon
+                icon="reload"
+              >
+              </b-icon>
+            </a>
+            <a class="nav-item is-tab">
+              <b-icon
+                icon="book-open-variant"
+              >
+              </b-icon>
+            </a>
           </div>
         </nav>
       </div>
@@ -45,7 +45,16 @@
                   :class="linkClasses(link.path)"
                   :to="link.path"
                 >
-                  {{ link.name }}
+                  <div class="columns">
+                    <div class="column is-one-quarter">
+                      <b-icon
+                        :icon="link.icon"
+                      ></b-icon>
+                    </div>
+                    <div class="column">
+                      {{ link.name }}
+                    </div>
+                  </div>
                 </router-link>
                 <ul v-if="link.sublinks">
                   <li v-for="sublink in link.sublinks">
@@ -77,24 +86,19 @@ export default {
     return {
       viewLinks: [
         {
-          path: '/',
-          name: 'Overview'
-        },
-        {
           path: '/patterns',
-          name: 'Patterns'
+          name: 'Patterns',
+          icon: 'lock-pattern',
         },
         {
           path: '/matches',
-          name: 'Matches'
+          name: 'Matches',
+          icon: 'group',
         },
         {
           path: '/documents',
           name: 'Documents',
-          // sublinks: [{
-          //   path: '/sentences',
-          //   name: 'Sentences',
-          // }],
+          icon: 'file-document-box-multiple-outline',
         },
       ],
     }

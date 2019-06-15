@@ -9,6 +9,7 @@ export default new Router({
       path: '/',
       name: 'Overview',
       component: () => import('./views/Overview.vue'),
+      redirect: '/patterns'
     },
     {
       path: '/documents',
