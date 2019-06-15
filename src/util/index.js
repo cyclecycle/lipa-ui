@@ -1,7 +1,7 @@
 import generic from './generic'
-import util from './util'
+import common from './common'
 
 export default {
   ...generic,
-  ...util,
+  ...common,
 }

@@ -10526,9 +10526,9 @@ vue-annotated-sentence@^0.1.0:
     vue "^2.6.10"
 
 vue-annotated-text@^0.1.0:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/vue-annotated-text/-/vue-annotated-text-0.1.6.tgz#1d78462292d603ca4fe15e623dd82354e44ae451"
-  integrity sha512-r73dfaTnvo5S3r8y6rER8Jj0kGL/e7DJV0FiEHCJsMLaSKme33qifQZIthWIV5MUo7eMezYXw+akjtHZtd1eHw==
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/vue-annotated-text/-/vue-annotated-text-0.1.9.tgz#c5192a77ff79574f2751c6f66dc2f5bc7132bc68"
+  integrity sha512-9FwFxzDfO69qBQhYLG3fjVynqSyWdCb/5OWH0RgRkdhLnjC+t0g7xn3ciiw3FKutvdTgIiQ9+k6fUv09rQaK8Q==
   dependencies:
     color-mixer kosamari/color-mixer
     core-js "^2.6.5"
@@ -10591,6 +10591,11 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-material-design-icons@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/vue-material-design-icons/-/vue-material-design-icons-3.2.0.tgz#d0affe9cb5b48dbfca64c12b656a9e64ff0b4cdb"
+  integrity sha512-7+VDoSC5bvXXCS3TK/aMShVsVLjJiOoKuyJPCqJOcrM7V/Uv5Nlk4C9ZXSmsuys8aoYRnfC6JmMTw6ZZl2jjlw==
 
 vue-router@^3.0.3:
   version "3.0.6"

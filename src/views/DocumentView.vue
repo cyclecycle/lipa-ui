@@ -3,8 +3,11 @@
     <div class="heading">Document ID {{ documentId }}</div>
       <div class="columns">
         <div class="column is-two-thirds">
-          <section v-for="section in document.sections">
-            <div
+          <section
+            v-for="section in document.sections"
+            class="document-section"
+          >
+            <span
               v-for="sentence in getSectionSentences(section.name)"
               v-on:click="activateSentence(sentence.id)"
               class="sentence-container"
@@ -16,7 +19,7 @@
                 :spanEvents="annotatedTextSpanEvents"
                 class="sentence"
               />
-            </div>
+            </span>
           </section>
         </div>
         <div class="column">
@@ -145,25 +148,7 @@ export default {
       const matches = this.matches.filter(match => {
         return match.sentence_id == sentenceId
       })
-      let annotations = []
-      matches.forEach(match => {
-        const matchId = match.match_id
-        const patternId = match.pattern_id
-        const slots = match.slots
-        const slotLabels = Object.keys(slots)
-        slotLabels.forEach(slotLabel => {
-          let slotTokens = [...slots[slotLabel]]
-          slotTokens = slotTokens.forEach(slotToken => {
-            const annotation = slotToken
-            annotation.label = slotLabel
-            annotation.patternId = patternId
-            annotation.matchId = matchId
-            const annotationId = `${patternId}-${slotLabel}`
-            annotation.id = annotationId
-            annotations.push(slotToken)
-          })
-        })
-      })
+      const annotations = util.matchesToAnnotations(matches)
       return annotations
     },
     activateSentence: function (sentenceId) {
@@ -199,8 +184,8 @@ export default {
   outline: 2px solid black !important;
   cursor: pointer;
 }
-.sentence-container {
-  display: inline-block;
+.document-section {
+  padding-top: 20px;
 }
 .sentence {
   margin-right: 0.25em;

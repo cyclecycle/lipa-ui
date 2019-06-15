@@ -50,8 +50,8 @@
     <template slot="detail" slot-scope="props">
       <div>
         <AnnotatedText
-          :text="matchSentence"
-          :annotations="matchAnnotations"
+          :text="props.row.sentence_data.text"
+          :annotations="getAnnotations(props.row)"
           :getSpanClasses="getSpanClasses"
         />
       </div>
@@ -89,33 +89,6 @@ export default {
   },
   data() {
     return {
-      defaultMatchTableColumns: [
-        {
-          field: 'slotContent',
-          label: 'Match content',
-        },
-        {
-          field: 'id',
-          label: 'Match ID',
-          numeric: true,
-          width: 100,
-          sortable: true,
-        },
-        {
-          field: 'pattern_id',
-          label: 'Pattern ID',
-          numeric: true,
-          width: 120,
-          sortable: true,
-        },
-        {
-          field: 'sentence_id',
-          label: 'Sentence ID',
-          numeric: true,
-          width: 140,
-          sortable: true,
-        },
-      ],
       validationOptions: [
         {
           label: 'Unvalidated',
@@ -128,29 +101,6 @@ export default {
         {
           label: 'Invalid',
           value: 'invalid',
-        },
-      ],
-      matchSentence: 'The amyloid-beta oligomer hypothesis was introduced in 1998',
-      matchAnnotations: [
-        {
-          id: 1,
-          start: 26,
-          length: 10,
-          label: 'slot1'
-        },
-        {
-          id: 2,
-          text: 'was',
-          start: 37,
-          length: 3,
-          label: 'slot2',
-        },
-        {
-          id: 2,
-          text: 'introduced',
-          start: 41,
-          length: 10,
-          label: 'slot2',
         },
       ],
     }
@@ -188,6 +138,10 @@ export default {
     },
   },
   methods: {
+    getAnnotations (match) {
+      const annotations = util.matchToAnnotations(match)
+      return annotations
+    },
     toggle(row) {
         this.$refs.table.toggleDetails(row)
     },
@@ -200,7 +154,7 @@ export default {
       } else {
         return []
       }
-    }
+    },
   },
 }
 </script>

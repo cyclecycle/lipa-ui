@@ -56,8 +56,43 @@ function getSlotsContent (slots, kwargs) {
   return slotsContent
 }
 
+function matchesToAnnotations (matches) {
+  if (matches.length === 0) {
+    return []
+  }
+  const annotationsMapped = matches.map(match => {
+    const annotations = matchToAnnotations(match)
+    return annotations
+  })
+  const annotations = annotationsMapped.reduce((a, b) => a.concat(b))
+  return annotations
+}
+
+function matchToAnnotations (match) {
+  const annotations = []
+  const matchId = match.match_id
+  const patternId = match.pattern_id
+  const slots = match.slots
+  const slotLabels = Object.keys(slots)
+  slotLabels.forEach(slotLabel => {
+    let slotTokens = [...slots[slotLabel]]
+    slotTokens = slotTokens.forEach(slotToken => {
+      const annotation = slotToken
+      annotation.label = slotLabel
+      annotation.patternId = patternId
+      annotation.matchId = matchId
+      const annotationId = `${patternId}-${slotLabel}`
+      annotation.id = annotationId
+      annotations.push(slotToken)
+    })
+  })
+  return annotations
+}
+
 export default {
   getSlotsContent,
   textifyMatchTokens,
   addSlotContentRepresentations,
+  matchToAnnotations,
+  matchesToAnnotations,
 }

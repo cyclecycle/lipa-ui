@@ -8,6 +8,26 @@
             <p class="nav-item">LIPA</p>
             <!-- <a class="nav-item is-tab is-active">Projects</a> -->
           </div>
+          <div class="nav-right">
+            <div class="nav-item">
+              <b-dropdown aria-role="list" position="is-bottom-left">
+                <button class="button is-primary" slot="trigger">
+                    <span>Actions</span>
+                    <b-icon icon="menu-down"></b-icon>
+                </button>
+
+                <b-dropdown-item aria-role="listitem">
+                  Import documents
+                </b-dropdown-item>
+                <b-dropdown-item aria-role="listitem" @click="refreshMatches">
+                  Refresh matches
+                </b-dropdown-item>
+                <b-dropdown-item aria-role="listitem">
+                  Read the docs
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
         </nav>
       </div>
     </header>
@@ -50,6 +70,8 @@
 </template>
 
 <script>
+import patternAPI from './pattern_api'
+
 export default {
   data () {
     return {
@@ -69,10 +91,10 @@ export default {
         {
           path: '/documents',
           name: 'Documents',
-          sublinks: [{
-            path: '/sentences',
-            name: 'Sentences',
-          }],
+          // sublinks: [{
+          //   path: '/sentences',
+          //   name: 'Sentences',
+          // }],
         },
       ],
     }
@@ -86,6 +108,22 @@ export default {
       }
       return classes
     },
+    refreshMatches() {
+      const toast = this.$toast
+      patternAPI.socket.emit('refresh_pattern_matches')
+      patternAPI.socket.on('message', function (message) {
+        toast.open({
+          message: message,
+          type: 'is-dark',
+        })
+      })
+      patternAPI.socket.on('error', function (message) {
+        toast.open({
+          message: message,
+          type: 'is-warning',
+        })
+      })
+    }
   }
 }
 </script>
