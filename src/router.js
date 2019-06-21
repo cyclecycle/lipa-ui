@@ -4,6 +4,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -68,6 +69,18 @@ export default new Router({
       props: (route) => {
         return {
           posMatchId: Number(route.query.pos_match_id)
+        }
+      },
+    },
+    {
+      path: '/visualise',
+      name: 'visualise-view',
+      component: () => import('./views/VisualiseView.vue'),
+      props: (route) => {
+        return {
+          patternId: Number(route.query.pattern_id),
+          sentenceId: Number(route.query.sentence_id),
+          matchId: Number(route.query.match_id),
         }
       },
     },

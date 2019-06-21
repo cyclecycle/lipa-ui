@@ -4,29 +4,53 @@
       <div class="hero-head">
         <nav class="nav has-shadow">
           <div class="nav-left">
-              <!-- <img src="http://bulma.io/images/bulma-logo.png" alt="Bulma logo"> -->
-            <p class="nav-item">LIPA</p>
-            <!-- <a class="nav-item is-tab is-active">Projects</a> -->
+            <p class="nav-item pl">LIPA</p>
           </div>
           <div class="nav-right">
-            <a class="nav-item is-tab">
-              <b-icon
-                icon="file-upload"
-              >
-              </b-icon>
-            </a>
-            <a class="nav-item is-tab">
-              <b-icon
-                icon="reload"
-              >
-              </b-icon>
-            </a>
-            <a class="nav-item is-tab">
-              <b-icon
-                icon="book-open-variant"
-              >
-              </b-icon>
-            </a>
+            <b-tooltip
+              label="Import documents"
+              position="is-left"
+            >
+              <a class="nav-item is-tab">
+                <b-icon
+                  icon="file-upload"
+                >
+                </b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip
+              label="Clear and reload pattern matches"
+              position="is-left"
+            >
+              <a class="nav-item is-tab" @click="refreshMatches()">
+                <b-icon
+                  icon="reload"
+                >
+                </b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip
+              label="Export data"
+              position="is-left"
+            >
+              <a class="nav-item is-tab">
+                <b-icon
+                  icon="file-download"
+                >
+                </b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip
+              label="User guide"
+              position="is-left"
+            >
+              <a class="nav-item is-tab">
+                <b-icon
+                  icon="book-open-variant"
+                >
+                </b-icon>
+              </a>
+            </b-tooltip>
           </div>
         </nav>
       </div>
@@ -115,16 +139,23 @@ export default {
     refreshMatches() {
       const toast = this.$toast
       patternAPI.socket.emit('refresh_pattern_matches')
-      patternAPI.socket.on('message', function (message) {
-        toast.open({
-          message: message,
-          type: 'is-dark',
-        })
-      })
+      this.$notification.open('Refreshing pattern matches')
+      // patternAPI.socket.on('message', function (message) {
+        // toast.open({
+        //   message: message,
+        //   type: 'is-dark',
+        // })
+      // })
       patternAPI.socket.on('error', function (message) {
         toast.open({
           message: message,
           type: 'is-warning',
+        })
+      })
+      patternAPI.socket.on('refresh_pattern_matches_success', function (message) {
+        toast.open({
+          message: 'Refresh pattern matches done',
+          type: 'is-dark',
         })
       })
     }
@@ -136,5 +167,12 @@ export default {
 .menu-list a.is-active {
     background-color: #00d1b2;
     color: #fff;
+}
+.pl {
+  padding-left: 20px;
+}
+
+.row-action {
+  cursor: pointer;
 }
 </style>

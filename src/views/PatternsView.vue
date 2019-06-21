@@ -1,13 +1,26 @@
 <template>
   <div>
-    <div class="title">Patterns</div>
+    <div class="level">
+      <div class="level-left">
+        <div class="title">Patterns</div>
+      </div>
+    </div>
     <div>
       <PatternTable
         :patterns="patterns"
         :loading="loading"
         :deleteRow="deletePattern"
+        :openPatternVisModal="openPatternVisModal"
       />
     </div>
+
+    <DotVisualisationModal
+      v-if="showPatternVisModal"
+      :patternId="activePatternId"
+      @close="showPatternVisModal = false"
+      :showLegend="true"
+    />
+
   </div>
 </template>
 
@@ -15,6 +28,7 @@
 import database from '../database'
 import util from '../util'
 import PatternTable from '../components/PatternTable.vue'
+import DotVisualisationModal from '../components/DotVisualisationModal.vue'
 
 export default {
   name: 'PatternsView',
@@ -25,12 +39,16 @@ export default {
     },
   },
   components: {
-    PatternTable
+    PatternTable,
+    DotVisualisationModal,
   },
   data() {
     return {
       patterns: [],
       loading: true,
+      modalLoading: false,
+      showPatternVisModal: false,
+      activePatternId: null,
     }
   },
   mounted() {
@@ -63,9 +81,10 @@ export default {
           }
         })
     },
+    openPatternVisModal (patternId) {
+      this.activePatternId = patternId
+      this.showPatternVisModal = true
+    },
   }
 }
 </script>
-
-<style>
-</style>

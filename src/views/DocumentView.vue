@@ -48,6 +48,20 @@
               </b-button>
             </router-link>
           </b-tooltip>
+          <b-tooltip
+            :active="activeSentenceId === null"
+            label="Select a sentence to visualise sentence"
+            position="is-left"
+            class="pt"
+          >
+              <b-button
+                color="primary"
+                :disabled="activeSentenceId === null"
+                @click="openSentenceVisModal(activeSentenceId)"
+              >
+                  Visualise sentence
+              </b-button>
+          </b-tooltip>
         </b-message>
         <b-message :active="true">
           <div class="heading">Pattern match</div>
@@ -71,6 +85,13 @@
         </b-message>
         </div>
       </div>
+
+    <DotVisualisationModal
+      v-if="showSentenceVisModal"
+      :sentenceId="activeSentenceId"
+      @close="showSentenceVisModal = false"
+    />
+
   </div>
 </template>
 
@@ -78,6 +99,7 @@
 import AnnotatedText from 'vue-annotated-text'
 import database from '../database'
 import util from '../util'
+import DotVisualisationModal from '../components/DotVisualisationModal.vue'
 
 export default {
   name: 'DocumentView',
@@ -86,6 +108,9 @@ export default {
       type: Number,
       default: 1,
     }
+  },
+  components: {
+    DotVisualisationModal,
   },
   data() {
     return {
@@ -97,6 +122,7 @@ export default {
       },
       matches: [],
       activeAnnotations: [],
+      showSentenceVisModal: false,
     }
   },
   computed: {
@@ -171,6 +197,9 @@ export default {
     },
     onSpanClick: function(e, annotations) {
       this.activeAnnotations = annotations
+    },
+    openSentenceVisModal (sentenceId) {
+      this.showSentenceVisModal = true
     },
   }
 }

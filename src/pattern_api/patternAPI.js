@@ -14,13 +14,13 @@ class PatternAPI {
     socket.on('connect', function () {
       console.log(`connected to pattern API at ${url}`);
     });
-    // socket.on('message', function (msg) {
-    //   console.log(msg)
-    // })
-    // socket.on('error', function (msg) {
-    //   console.log('error')
-    //   console.log(msg)
-    // })
+    socket.on('message', function (msg) {
+      console.log(msg)
+    })
+    socket.on('error', function (msg) {
+      console.log('error')
+      console.log(msg)
+    })
   }
 }
 

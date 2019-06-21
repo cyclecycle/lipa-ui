@@ -34,6 +34,17 @@
         {{ props.row.pattern_id }}
       </b-table-column>
 
+      <b-table-column>
+        <b-tooltip label="Visualise pattern">
+          <div
+            @click="openMatchVisModal(props.row.id)"
+            class="row-action"
+          >
+            <b-icon icon="eye"/>
+          </div>
+        </b-tooltip>
+      </b-table-column>
+
 <!--       <b-table-column field="validationStatus" label="validationStatus">
         <b-select v-model="props.row.validationStatus">
           <option
@@ -78,6 +89,7 @@ export default {
   props: {
     matches: Array,
     loading: Boolean,
+    openMatchVisModal: Function,
     slotLabelsAsColumns: {
       type: Boolean,
       default: false,

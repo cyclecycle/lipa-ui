@@ -76,13 +76,13 @@ export default {
       const posMatchIds = [this.posMatchId]
       const loadOnto = this
       const targetAttribute = 'posMatches'
-      database.loadByIds('matches', posMatchIds, loadOnto, targetAttribute)
+      database.loadByIds('matches_view', posMatchIds, loadOnto, targetAttribute)
     },
     loadNegMatches: function() {
       const loadOnto = this
       const targetAttribute = 'negMatches'
       const negMatchIds = this.negMatchIds
-      database.loadByIds('matches', negMatchIds, loadOnto, targetAttribute)
+      database.loadByIds('matches_view', negMatchIds, loadOnto, targetAttribute)
     },
     calculatePattern: function() {
       // Hit API, listen to status.

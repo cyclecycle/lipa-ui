@@ -12,14 +12,39 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column id="n_matches" label="# Matches" centered>
-        <router-link :to="matchTableLink(props.row.id)">
-          {{ props.row.n_matches }}
-        </router-link>
+        <b-tooltip label="View matches">
+          <router-link :to="matchTableLink(props.row.id)">
+            {{ props.row.n_matches }}
+          </router-link>
+        </b-tooltip>
       </b-table-column>
-      <b-table-column>
-        <b-button @click="deleteRow(props.row.id)">
-          Delete
-        </b-button>
+      <b-table-column label="Actions" width="140" centered>
+        <div class="level">
+          <div class="level-item">
+            <b-tooltip
+              label="Visualise pattern"
+            >
+              <div
+                @click="openPatternVisModal(props.row.id)"
+                class="row-action"
+              >
+                <b-icon icon="eye"/>
+              </div>
+            </b-tooltip>
+          </div>
+          <div class="level-item">
+            <b-tooltip
+              label="Delete pattern"
+            >
+              <div
+                @click="deleteRow(props.row.id)"
+                class="row-action"
+              >
+                <b-icon icon="delete" />
+              </div>
+            </b-tooltip>
+          </div>
+        </div>
       </b-table-column>
     </template>
 
@@ -44,6 +69,7 @@ export default {
     patterns: Array,
     loading: Boolean,
     deleteRow: Function,
+    openPatternVisModal: Function,
   },
   methods: {
     matchTableLink (patternId) {
