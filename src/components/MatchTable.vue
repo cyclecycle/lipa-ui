@@ -13,6 +13,12 @@
         {{ props.row.slotContent }}
       </b-table-column>
 
+      <b-table-column field="document_id" label="Document ID">
+        <router-link :to="`/document/?id=${props.row.document_id}`">
+          {{ props.row.document_id }}
+        </router-link>
+      </b-table-column>
+
       <b-table-column field="sentence_id" label="Sentence ID">
         {{ props.row.sentence_id }}
       </b-table-column>

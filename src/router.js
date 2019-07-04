@@ -73,6 +73,11 @@ export default new Router({
       },
     },
     {
+      path: '/import_docs',
+      name: 'import-docs-view',
+      component: () => import('./views/ImportDocsView.vue'),
+    },
+    {
       path: '/visualise',
       name: 'visualise-view',
       component: () => import('./views/VisualiseView.vue'),

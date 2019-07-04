@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal :active="true" @close="$emit('close')">
+    <b-modal :active="true" @close="$emit('close')" width="100%">
       <b-loading :active.sync="loading" :is-full-page="true">
       </b-loading>
       <div class="card">
@@ -9,7 +9,7 @@
             <div class="heading">Graph</div>
             <div id="graph"></div>
           </div>
-          <div class="level-item" v-if="showLegend">
+          <div class="level-item is-one-fifth" v-if="showLegend">
             <div class="heading">Slot labels</div>
             <div id="legend"></div>
           </div>

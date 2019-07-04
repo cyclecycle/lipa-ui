@@ -54,7 +54,6 @@ export default {
     return {
       posMatches: [],
       negMatches: [],
-      loading: true,
       submitted: false,
       patternResults: null,
       patternAPIMessageLog: [],
@@ -87,24 +86,29 @@ export default {
     calculatePattern: function() {
       // Hit API, listen to status.
       this.submitted = true
+      this.buildPatternResultsReceived = false  // In case still true from a previous call
+      console.log(this.buildPatternResultsReceived)
       // If just pos match, build pattern. else refine
       const buildPatternData = {
         pos_match_id: this.posMatchId
       }
       patternAPI.socket.emit('build_pattern', buildPatternData)
       const patternAPIMessageLog = this.patternAPIMessageLog
+      // These listeners persist. We should only set them once. I don't know at this point what the best to do this might be.
       patternAPI.socket.on('message', function (message) {
         patternAPIMessageLog.push(message)
       })
       patternAPI.socket.on('error', function (message) {
         patternAPIMessageLog.push(message)
       })
+      const this_ = this // To provide this context in the socket listner
       patternAPI.socket.on('build_pattern_success', function (data) {
-        if (!this.buildPatternResultsReceived) {
+        console.log(this_.buildPatternResultsReceived)
+        if (!this_.buildPatternResultsReceived) {
           patternAPIMessageLog.push('Build pattern success')
           console.log('build pattern success', data)
-          this.buildPatternResultsReceived = true
-          this.patternResults = {patternId: data.pattern_id}
+          this_.buildPatternResultsReceived = true
+          this_.patternResults = {patternId: data.pattern_id}
           patternAPI.socket.emit('find_matches', data)
         } else {
           console.log('UI tried to call API again, but already have results')

@@ -11,12 +11,12 @@
               label="Import documents"
               position="is-left"
             >
-              <a class="nav-item is-tab">
-                <b-icon
-                  icon="file-upload"
-                >
-                </b-icon>
-              </a>
+             <router-link to="import_docs" class="nav-item is-tab"> 
+                  <b-icon
+                    icon="file-upload"
+                  >
+                  </b-icon>
+              </router-link>
             </b-tooltip>
             <b-tooltip
               label="Clear and reload pattern matches"
