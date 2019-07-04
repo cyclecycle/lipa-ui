@@ -11,6 +11,9 @@
       <b-table-column id="name" label="Name">
         {{ props.row.name }}
       </b-table-column>
+      <b-table-column id="tokenLabels" label="Slot labels">
+        {{ props.row.token_labels }}
+      </b-table-column>
       <b-table-column id="n_matches" label="# Matches" centered>
         <b-tooltip label="View matches">
           <router-link :to="matchTableLink(props.row.id)">
