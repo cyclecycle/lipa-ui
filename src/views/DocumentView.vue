@@ -88,7 +88,8 @@
 
     <DotVisualisationModal
       v-if="showSentenceVisModal"
-      :sentenceId="activeSentenceId"
+      model="sentence"
+      :id="activeSentenceId"
       @close="showSentenceVisModal = false"
     />
 

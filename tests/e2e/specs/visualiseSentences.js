@@ -1,6 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-const checkPatternBuildResults = () => {
+const checkVisualiseSentence = () => {
   cy.wait(1500)
   cy.get('#pattern-api-message-log')
     .then(messageLog => {

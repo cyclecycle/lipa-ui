@@ -13,7 +13,8 @@
 
     <DotVisualisationModal
       v-if="showMatchVisModal"
-      :matchId="activeMatchId"
+      model="match"
+      :id="activeMatchId"
       @close="showMatchVisModal = false"
       :showLegend="true"
     />

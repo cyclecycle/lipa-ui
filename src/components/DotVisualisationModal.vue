@@ -27,17 +27,11 @@ import 'd3-graphviz';
 export default {
   name: 'dot-visualisation-modal',
   props: {
-    patternId: {
-      type: Number,
-      default: NaN,
+    model: {
+      type: String,
     },
-    sentenceId: {
+    id: {
       type: Number,
-      default: NaN,
-    },
-    matchId: {
-      type: Number,
-      default: NaN,
     },
     showLegend: {
       type: Boolean,
@@ -52,31 +46,32 @@ export default {
     }
   },
   mounted() {
-    if (!isNaN(this.patternId)) {
-      this.getDot('pattern', this.patternId)
-    }
-    if (!isNaN(this.sentenceId)) {
-      this.getDot('sentence', this.sentenceId)
-    }
-    if (!isNaN(this.matchId)) {
-      this.getDot('match', this.matchId)
-    }
+    const model = this.model
+    const id = this.id
+    this.getDot(model, id)
+    this.setPatternAPIlistener()
   },
   methods: {
-    getDot(model, id) {
-      const event = `visualise_${model}`
-      const success_event = `visualise_${model}_success`
-      const payload = {}
-      const idKey = `${model}_id`
-      payload[idKey] = id
-      patternAPI.socket.emit(event, payload)
-      patternAPI.socket.on(success_event, (data) => {
+    setPatternAPIlistener() {
+      const model = this.model
+      const event = `visualise_${model}_success`
+      const callback = (data) => {
         this.graph = data.graph
         this.legend = data.legend
         this.loading = false
         this.renderDotGraph(this.graph)
-        this.renderDotLegend(this.legend)
-      })
+        if (this.legend !== undefined) {
+          this.renderDotLegend(this.legend)
+        }
+      }
+      patternAPI.on(event, callback)
+    },
+    getDot(model, id) {
+      const payload = {}
+      const idKey = `${model}_id`
+      payload[idKey] = id
+      const event = `visualise_${model}`
+      patternAPI.emit(event, payload)
     },
     renderDotGraph(dot) {
       select("#graph")

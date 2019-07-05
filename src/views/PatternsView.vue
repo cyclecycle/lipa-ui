@@ -16,7 +16,8 @@
 
     <DotVisualisationModal
       v-if="showPatternVisModal"
-      :patternId="activePatternId"
+      model="pattern"
+      :id="activePatternId"
       @close="showPatternVisModal = false"
       :showLegend="true"
     />
