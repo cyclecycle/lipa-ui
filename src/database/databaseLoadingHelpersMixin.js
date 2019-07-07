@@ -5,27 +5,26 @@ database.loadDocument(this, documentId)
 */
 
 import util from '../util';
-import config from '../config';
 
 
 const databaseLoadingHelpersMixin = {
-  loadOneByQuery (query, target, targetAttribute) {
+  loadOneByQuery(query, target, targetAttribute) {
     const database = this
     database.get(query)
-      .then(items => {
+      .then((items) => {
         let item = items[0]
         console.log(item)
         target[targetAttribute] = item
       })
   },
-  loadByQuery (query, target, targetAttribute) {
+  loadByQuery(query, target, targetAttribute) {
     const database = this
     database.get(query)
-      .then(items => {
+      .then((items) => {
         target[targetAttribute] = items
       })
   },
-  loadByQueryIteratively (queryString, loadOntoTarget, targetAttribute) {
+  loadByQueryIteratively(queryString, loadOntoTarget, targetAttribute, chunkSize) {
     const queryUrl = this.queryUrl(queryString)
     const startRow = 0
     let itemsHandler = (items) => {
@@ -37,6 +36,7 @@ const databaseLoadingHelpersMixin = {
         startRow,
         itemsHandler,
         resolve,
+        chunkSize
       }
       const recursiveRequest = this.buildRecursiveRequest(recursiveRequestArgs)
         .catch(e => {
@@ -46,7 +46,7 @@ const databaseLoadingHelpersMixin = {
     })
     return requestPromise
   },
-  loadById (table, id, target, targetAttribute) {
+  loadById(table, id, target, targetAttribute) {
     const query = `${table}/?id=${id}`
     const database = this
     database.get(query)
@@ -55,7 +55,7 @@ const databaseLoadingHelpersMixin = {
         target[targetAttribute] = item
       })
   },
-  loadByIds (table, ids, target, targetAttribute) {
+  loadByIds(table, ids, target, targetAttribute) {
     const database = this
     ids.forEach(id => {
       const query = `${table}/?id=${id}`
@@ -66,7 +66,7 @@ const databaseLoadingHelpersMixin = {
         })
     })
   },
-  loadDocument (target, documentId) {
+  loadDocument(target, documentId) {
     const query = `documents/?id=${documentId}`
     const database = this
     database.get(query)
@@ -76,7 +76,7 @@ const databaseLoadingHelpersMixin = {
         target.document = document_
       })
   },
-  loadSentences (target, documentId) {
+  loadSentences(target, documentId) {
     const query = `sentences/?document_id=${documentId}`
     const database = this
     database.get(query)
@@ -86,7 +86,7 @@ const databaseLoadingHelpersMixin = {
         target.sentences = sentences
       })
   },
-  loadSentence (target, sentenceId) {
+  loadSentence(target, sentenceId) {
     const query = `sentences/?id=${sentenceId}`
     const database = this
     database.get(query)
@@ -96,7 +96,7 @@ const databaseLoadingHelpersMixin = {
         target.sentence = sentence
       })
   },
-  loadTokens (target, sentenceId) {
+  loadTokens(target, sentenceId) {
     const query = `tokens/?sentence_id=${sentenceId}`
     const database = this
     database.get(query)

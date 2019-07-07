@@ -16,6 +16,7 @@
                 :text="sentence.text"
                 :annotations="getSentenceAnnotations(sentence.id)"
                 :getSpanClasses="getAnnotatedTextSpanClasses"
+                :getAnnotationColor="getAnnotationColor"
                 :spanEvents="annotatedTextSpanEvents"
                 class="sentence"
               />
@@ -37,7 +38,6 @@
             :active="activeSentenceId === null"
             label="Select a sentence to create a training example"
             position="is-left"
-            class="pt"
           >
             <router-link :to="createTrainingExampleRoute()">
               <b-button
@@ -52,7 +52,6 @@
             :active="activeSentenceId === null"
             label="Select a sentence to visualise sentence"
             position="is-left"
-            class="pt"
           >
               <b-button
                 color="primary"
@@ -124,6 +123,19 @@ export default {
       matches: [],
       activeAnnotations: [],
       showSentenceVisModal: false,
+      labelColors: [
+        '#B2DFDB',
+        '#E1BEE7',
+        '#BBDEFB',
+        '#C8E6C9',
+        '#FFCDD2',
+        '#F8BBD0',
+        '#C5CAE9',
+        '#B2EBF2',
+        '#FFECB3',
+        '#FFE0B2',
+        '#CFD8DC',
+      ],
     }
   },
   computed: {
@@ -143,6 +155,33 @@ export default {
         return match
       }) 
       return matches
+    },
+    uniqueSlotLabels() {
+      let allLabels = []
+      this.matches.forEach(match => {
+        const labels = Object.keys(match.slots)
+        allLabels = allLabels.concat(labels)
+      })
+      const uniqueLabels = [...new Set(allLabels)]
+      console.log(uniqueLabels)
+      return uniqueLabels
+    },
+    label2color() {
+      const labels = this.uniqueSlotLabels
+      let colorI = 0
+      let isLastcolor = false
+      const label2color = {}
+      labels.forEach(label => {
+        const color = this.labelColors[colorI]
+        label2color[label] = color
+        isLastcolor = colorI === this.labelColors.length - 1
+        if (isLastcolor) {
+          colorI = 0
+        } else {
+          colorI = colorI + 1
+        }
+      })
+      return label2color
     },
   },
   mounted() {
@@ -192,6 +231,11 @@ export default {
         return []
       }
     },
+    getAnnotationColor: function(annotation) {
+      const label = annotation.label
+      const color = this.label2color[label]
+      return color
+    },
     matchById: function(matchId) {
       const match = util.objById(this.matches, matchId)
       return match
@@ -222,7 +266,7 @@ export default {
 }
 .sentence:hover {
   cursor: pointer;
-  background-color: hsl(171, 100%, 90%);
+  background-color: #FCE4EC;
 }
 .sentence-active {
   outline: 2px solid black !important;

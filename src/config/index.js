@@ -3,7 +3,7 @@ const config = {
   databaseRestUrl: 'http://localhost:8085/',
   patternApiUrl: 'http://localhost:5000/',
   importDocumentsCLI: '/home/nickm/Documents/dev/lipa-db/insert_documents_cli.py',
-  databaseLoadingChunkSize: 5,
+  databaseLoadingChunkSize: 10,
   databaseJsonFields: [ // Fields which require JSON parsing
     'data',
     'match_data',

@@ -19,8 +19,10 @@ const databaseRequestHelpersMixin = {
     }
     return params
   },
-  buildRecursiveRequest ({ queryUrl, startRow, itemsHandler, resolve }) {
-    const chunkSize = databaseLoadingChunkSize
+  buildRecursiveRequest ({ queryUrl, startRow, itemsHandler, resolve, chunkSize }) {
+    if (chunkSize === undefined) {
+      chunkSize = databaseLoadingChunkSize
+    }
     const endRow = util.getEndChunkValue(startRow, chunkSize)
     const params = this.buildRequestParamsObject(startRow, endRow)
     const request = axios.get(queryUrl, params)

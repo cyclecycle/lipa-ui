@@ -11,12 +11,12 @@
               label="Import documents"
               position="is-left"
             >
-             <router-link to="import_docs" class="nav-item is-tab"> 
-                  <b-icon
-                    icon="file-upload"
-                  >
-                  </b-icon>
-              </router-link>
+<!--              <router-link to="import_docs" class="nav-item is-tab"> 
+                <b-icon
+                  icon="file-upload"
+                >
+                </b-icon>
+              </router-link> -->
             </b-tooltip>
             <b-tooltip
               label="Clear and reload pattern matches"
@@ -44,12 +44,12 @@
               label="User guide"
               position="is-left"
             >
-              <a class="nav-item is-tab">
+              <router-link to="user_guide" class="nav-item is-tab"> 
                 <b-icon
                   icon="book-open-variant"
                 >
                 </b-icon>
-              </a>
+              </router-link>
             </b-tooltip>
           </div>
         </nav>

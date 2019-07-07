@@ -78,6 +78,11 @@ export default new Router({
       component: () => import('./views/ImportDocsView.vue'),
     },
     {
+      path: '/user_guide',
+      name: 'user-guide-view',
+      component: () => import('./views/UserGuideView.vue'),
+    },
+    {
       path: '/visualise',
       name: 'visualise-view',
       component: () => import('./views/VisualiseView.vue'),

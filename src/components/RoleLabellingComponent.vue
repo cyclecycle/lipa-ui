@@ -1,6 +1,6 @@
 <template>
   <div class="role-labelling-component">
-    <div class="sentence">
+    <div>
       <AnnotatedText
         ref="annotatedText"
         :text="sentence"
@@ -10,37 +10,52 @@
       />
     </div>
     <br>
-    <div class="slots">
+
+    <div class="tile is-ancestor box" style="flex-wrap: wrap;">
       <div
         v-for="slot in slots"
-        class="slot"
+        class="slot tile is-parent is-vertical is-3"
       >
         <div
           :class="tokenHolderClasses(slot)"
-          v-on:click="activateSlot(slot.id)"
+          @click="activateSlot(slot.id)"
         >
           <span v-for="token in slot.tokens">{{ token.text }} </span>
         </div>
-        <div class="slot-label">
-          <b-field label="Slot label">
-            <b-input v-model="slot.label"></b-input>
-          </b-field>
+
+        <div class="slot-label tile is-child">
+          <b-input v-model="slot.label" placeholder="Slot label"></b-input>
         </div>
+        <div class="container tile is-child">
+          <div
+            class="remove-slot-button"
+            v-on:click="removeSlot(slot.id)"
+          >
+            <b-button
+              icon-right="minus"
+              type="is-warning"
+              size="is-small"
+            ></b-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="level">
         <div
-          class="remove-slot-button"
-          v-on:click="removeSlot(slot.id)"
+          class="add-slot-button"
+          v-on:click="addSlot()"
         >
-          <b-button icon-right="remove">-</b-button>
+          <b-button
+            icon-right="plus"
+            type="is-primary"
+            style="margin-left: 12px"
+          ></b-button>
+        </div>
       </div>
-      </div>
-      <div
-        class="add-slot-button"
-        v-on:click="addSlot()"
-      >
-        <b-button icon-right="add">+</b-button>
-      </div>
+
     </div>
   </div>
+
 </template>
 
 <script>
@@ -126,7 +141,7 @@ export default {
       this.slots = newSlots
     },
     tokenHolderClasses: function(slot) {
-      const classes = ['slot-token-holder']
+      const classes = ['slot-token-holder', 'is-child']
       if (slot.id === this.activeSlotId) {
         classes.push('slot-token-holder-active')
       }
@@ -146,30 +161,22 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.role-labelling-component {
-  display: inline-block;
-}
-.slots {
-  /*display: inline-block;*/
-}
 .slot-token-holder {
-  border: 1px solid black;
-  display: inline-block;
-  min-height: 30px;
-  min-width: 150px;
+  box-shadow:inset 0px 0px 0px 1px #000;
+  min-height: 50px;
+  padding: 10px;
+  margin-bottom: 26px;
 }
 .slot-token-holder-active {
-  border: 2px solid;
+  box-shadow:inset 0px 0px 0px 2px #000;
 }
 .add-slot-button {
-  display: inline-block;
 }
 .remove-slot-button {
-  display: inline-block;
 }
 .token:hover {
   outline: 1px solid black;
+  background-color: #FCE4EC !important;
 }
 </style>

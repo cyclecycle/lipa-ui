@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLoaded()">
-    <div class="title">Create training example</div>
+    <div class="title">Create Pattern</div>
     <div>
       <RoleLabellingComponent
         ref="roleLabellingComponent"
@@ -10,6 +10,8 @@
     </div>
     <b-button
       v-on:click="submitTrainingMatch()"
+      type="is-primary"
+      style="margin-top: 30px"
     >
         Generate pattern
     </b-button>

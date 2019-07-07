@@ -12,7 +12,7 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column id="tokenLabels" label="Slot labels">
-        {{ props.row.token_labels }}
+        {{ props.row.token_labels.join(', ') }}
       </b-table-column>
       <b-table-column id="n_matches" label="# Matches" centered>
         <b-tooltip label="View matches">

@@ -48,7 +48,8 @@ export default {
     const loadOnto = this
     const loadOntoAttribute = 'documents'
     const loadDocumentsQuery = 'documents_view'
-    database.loadByQueryIteratively(loadDocumentsQuery, loadOnto, loadOntoAttribute)
+    const loadingChunkSize = 5
+    database.loadByQueryIteratively(loadDocumentsQuery, loadOnto, loadOntoAttribute, loadingChunkSize)
   },
   methods: {
     isLoaded: function () {
