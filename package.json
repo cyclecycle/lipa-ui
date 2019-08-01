@@ -20,7 +20,7 @@
     "socket.io-client": "^2.2.0",
     "vue": "^2.6.10",
     "vue-annotated-sentence": "^0.1.0",
-    "vue-annotated-text": "^0.1.0",
+    "vue-annotated-text": "^0.1.10",
     "vue-router": "^3.0.3"
   },
   "devDependencies": {

@@ -53,10 +53,16 @@ export default {
     }
   },
   mounted() {
-    database.loadByQueryIteratively('patterns_view', this, 'patterns')
-      .then(() => {
-        this.loading = false
-      })
+    const query = 'patterns_view'
+    const loadOntoTarget = this
+    const targetAttribute = 'patterns'
+    database.loadByQueryIteratively({
+      targetObj: this,
+      targetAttribute,
+      query,
+    }).then(() => {
+      this.loading = false
+    })
   },
   methods: {
     onDeleteSuccess(patternId) {

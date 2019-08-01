@@ -13,7 +13,7 @@
       type="is-primary"
       style="margin-top: 30px"
     >
-        Generate pattern
+      Generate pattern
     </b-button>
   </div>
 </template>
@@ -22,7 +22,6 @@
 import router from '../router';
 import database from '../database';
 import RoleLabellingComponent from '../components/RoleLabellingComponent.vue';
-
 
 export default {
   name: 'CreateTrainingExampleView',
@@ -43,46 +42,53 @@ export default {
     };
   },
   mounted() {
-    const sentenceId = this.sentenceId
-    const loadOnto = this
-    const sentenceTargetAttribute = 'sentence'
-    const tokensTargetAttribute = 'tokens'
-    const sentenceQuery = `sentences/?id=${sentenceId}`
-    const tokensQuery = `tokens/?sentence_id=${sentenceId}`
-    database.loadOneByQuery(sentenceQuery, loadOnto, sentenceTargetAttribute)
-    database.loadByQuery(tokensQuery, loadOnto, tokensTargetAttribute)
+    const sentenceId = this.sentenceId;
+    const sentenceTargetAttribute = 'sentence';
+    const tokensTargetAttribute = 'tokens';
+    const sentenceQuery = `sentences/?id=${sentenceId}`;
+    const tokensQuery = `tokens/?sentence_id=${sentenceId}`;
+    database.loadOneByQuery({
+      query: sentenceQuery,
+      targetObj: this,
+      targetAttribute: sentenceTargetAttribute,
+    });
+    database.loadByQuery({
+      query: tokensQuery,
+      targetObj: this,
+      targetAttribute: tokensTargetAttribute,
+    });
   },
   methods: {
     isLoaded: function() {
-      const sentenceLoaded = this.sentence !== null
-      const isLoaded = sentenceLoaded
-      return isLoaded
+      const sentenceLoaded = this.sentence !== null;
+      const isLoaded = sentenceLoaded;
+      return isLoaded;
     },
     roleSlotArrayToObj: function(roleSlots) {
-      const obj = {}
+      const obj = {};
       roleSlots.forEach(roleSlot => {
-        const label = roleSlot.label
-        const tokens = roleSlot.tokens
-        obj[label] = tokens
-      })
-      return obj
+        const label = roleSlot.label;
+        const tokens = roleSlot.tokens;
+        obj[label] = tokens;
+      });
+      return obj;
     },
     submitTrainingMatch: function() {
       // POST training example to database. On success, show message and link to pattern table, and call pattern generation APi with training example ID. Listen, and show status in pattern table through "calculating" and "finding matches", and potentially "error".
-      this.loading = !this.loading
-      const roleSlots = this.$refs.roleLabellingComponent.slots
-      const matchObj = this.roleSlotArrayToObj(roleSlots)
-      const sentenceId = this.sentenceId
-      database.postMatch(matchObj, sentenceId)
-        .then((matchRow) => {
-          const matchId = matchRow.id
-          console.log('match id:', matchId)
-          this.loading = !this.loading
-          router.push({
-             path: '/calculate-pattern', query: { pos_match_id: matchId }
-          })
-        })
+      this.loading = !this.loading;
+      const roleSlots = this.$refs.roleLabellingComponent.slots;
+      const matchObj = this.roleSlotArrayToObj(roleSlots);
+      const sentenceId = this.sentenceId;
+      database.postMatch(matchObj, sentenceId).then(matchRow => {
+        const matchId = matchRow.id;
+        console.log('match id:', matchId);
+        this.loading = !this.loading;
+        router.push({
+          path: '/calculate-pattern',
+          query: { pos_match_id: matchId },
+        });
+      });
     },
-  }
+  },
 };
 </script>

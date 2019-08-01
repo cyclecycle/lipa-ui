@@ -2,9 +2,14 @@
   <b-table
     :data="tableData"
     :loading="loading"
+    :total="total"
     detailed
     detail-key="id"
     :show-detail-icon="true"
+    paginated
+    backend-pagination
+    :per-page="perPage"
+    @page-change="onPageChange"
   >
 
     <template slot-scope="props">
@@ -41,7 +46,7 @@
       </b-table-column>
 
       <b-table-column>
-        <b-tooltip label="Visualise pattern">
+        <b-tooltip label="Visualise match">
           <div
             @click="openMatchVisModal(props.row.id)"
             class="row-action"
@@ -104,6 +109,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    perPage: Number,
+    onPageChange: Function,
+    total: Number,
   },
   data() {
     return {
@@ -168,7 +176,7 @@ export default {
     },
     getSpanClasses(span) {
       if (span.annotationIds.length > 0) {
-        return ['annotated-span']
+        return ['outline']
       } else {
         return []
       }
@@ -178,7 +186,7 @@ export default {
 </script>
 
 <style>
-  .annotated-span {
+  .outline {
     outline: 1px solid black;
   }
 </style>

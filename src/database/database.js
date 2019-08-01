@@ -66,6 +66,7 @@ class Database {
   }
 
   itemsHandler(items, loadOntoTarget, targetAttribute) {
+    console.log(items)
     items = items.map(item => this.parseJsonFields(item))
     items = util.unpackFields(items, fieldsToUnpack)
     util.loadOnto(items, loadOntoTarget, targetAttribute)

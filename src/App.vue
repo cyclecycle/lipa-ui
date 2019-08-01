@@ -29,7 +29,7 @@
                 </b-icon>
               </a>
             </b-tooltip>
-            <b-tooltip
+<!--             <b-tooltip
               label="Export data"
               position="is-left"
             >
@@ -39,7 +39,7 @@
                 >
                 </b-icon>
               </a>
-            </b-tooltip>
+            </b-tooltip> -->
             <b-tooltip
               label="User guide"
               position="is-left"

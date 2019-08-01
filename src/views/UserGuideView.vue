@@ -4,10 +4,10 @@
     <section>
       <div class="subtitle">Importing Documents</div>
       <div>
-        To import a set of documents, open a terminal, go to the directory <code>lipa/lipa-db</code> and call the import script like so:
+        Open a terminal, go to the directory <code>lipa/lipa-db</code> and call the import script like so:
       </div><br>
       <div class="code-box">
-        env/bin/python3 insert/import_documents_cli.py --corpus /path/to/file --id-field MY_ID_FIELD --content-fields MY_CONTENT_FIELD MY_OTHER_CONTENT_FIELD
+        ../env/bin/python3 insert/import_documents_cli.py --corpus /path/to/file --id-field MY_ID_FIELD --content-fields MY_CONTENT_FIELD MY_OTHER_CONTENT_FIELD
       </div>
       <div>
         Where:<br><br>
@@ -16,12 +16,20 @@
               <i>corpus</i> - is the path to a JSON file containing a list of documents,
             </li>
             <li>
-              <i>id-field</i> - is the field containing a unique ID for each document,
+              <i>id-field</i> - is the name of the field containing a unique ID for each document,
             </li>
             <li>
               <i>content-fields</i> - is a list of fields containing the content to be parsed and inserted.
             </li>
           </ul>
+      </div>
+    </section><br>
+    <section>
+      <div class="subtitle">Accessing Data</div>
+      <div>
+        Data is stored in an SQLite3 database at <code>lipa/lipa-db/databases/prod.db</code>.
+        <br><br>
+        The SQL schema is desribed in <code>lipa/lipa-db/sql</code>.
       </div>
     </section>
   </div>

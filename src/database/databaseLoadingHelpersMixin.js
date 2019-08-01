@@ -8,35 +8,35 @@ import util from '../util';
 
 
 const databaseLoadingHelpersMixin = {
-  loadOneByQuery(query, target, targetAttribute) {
+  loadOneByQuery({ query, targetObj, targetAttribute }) {
     const database = this
     database.get(query)
       .then((items) => {
         let item = items[0]
-        console.log(item)
-        target[targetAttribute] = item
+        targetObj[targetAttribute] = item
       })
   },
-  loadByQuery(query, target, targetAttribute) {
+  loadByQuery({ query, targetObj, targetAttribute }) {
     const database = this
     database.get(query)
       .then((items) => {
-        target[targetAttribute] = items
+        targetObj[targetAttribute] = items
       })
   },
-  loadByQueryIteratively(queryString, loadOntoTarget, targetAttribute, chunkSize) {
-    const queryUrl = this.queryUrl(queryString)
-    const startRow = 0
+  loadByQueryIteratively({ query, targetObj, targetAttribute, chunkSize, startRow, rowLimit }) {
+    const queryUrl = this.queryUrl(query)
+    startRow = startRow !== undefined ? startRow : 0
     let itemsHandler = (items) => {
-      this.itemsHandler(items, loadOntoTarget, targetAttribute)
+      this.itemsHandler(items, targetObj, targetAttribute)
     }
     const requestPromise = new Promise((resolve, reject) => {
       const recursiveRequestArgs = {
         queryUrl,
         startRow,
+        rowLimit,
         itemsHandler,
         resolve,
-        chunkSize
+        chunkSize,
       }
       const recursiveRequest = this.buildRecursiveRequest(recursiveRequestArgs)
         .catch(e => {

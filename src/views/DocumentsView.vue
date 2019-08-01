@@ -45,11 +45,16 @@ export default {
     }
   },
   mounted() {
-    const loadOnto = this
-    const loadOntoAttribute = 'documents'
-    const loadDocumentsQuery = 'documents_view'
-    const loadingChunkSize = 5
-    database.loadByQueryIteratively(loadDocumentsQuery, loadOnto, loadOntoAttribute, loadingChunkSize)
+    const query = 'documents_view'
+    const targetAttribute = 'documents'
+    const chunkSize = 5
+    const loadParams = {
+      targetObj: this,
+      query,
+      targetAttribute,
+      chunkSize,
+    }
+    database.loadByQueryIteratively(loadParams)
   },
   methods: {
     isLoaded: function () {
