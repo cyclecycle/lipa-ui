@@ -7,17 +7,6 @@ database.loadDocument(this, documentId)
 import util from '../util';
 
 
-const databasePostingHelpersMixin = {
-  postMatch(match, sentenceId) {
-    const database = this
-    const query = 'matches/'
-    const matchJSON = JSON.stringify({slots: match})
-    const matchRow = {
-      sentence_id: sentenceId,
-      data: matchJSON,
-    } 
-    return database.post(query, matchRow)
-  }
-}
+const databasePostingHelpersMixin = {}
 
 export default databasePostingHelpersMixin;

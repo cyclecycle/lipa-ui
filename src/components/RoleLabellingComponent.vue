@@ -9,17 +9,11 @@
         :getSpanClasses="getSpanClasses"
       />
     </div>
-    <br>
+    <br />
 
     <div class="tile is-ancestor box" style="flex-wrap: wrap;">
-      <div
-        v-for="slot in slots"
-        class="slot tile is-parent is-vertical is-3"
-      >
-        <div
-          :class="tokenHolderClasses(slot)"
-          @click="activateSlot(slot.id)"
-        >
+      <div v-for="slot in slots" class="slot tile is-parent is-vertical is-3">
+        <div :class="tokenHolderClasses(slot)" @click="activateSlot(slot.id)">
           <span v-for="token in slot.tokens">{{ token.text }} </span>
         </div>
 
@@ -27,10 +21,7 @@
           <b-input v-model="slot.label" placeholder="Slot label"></b-input>
         </div>
         <div class="container tile is-child">
-          <div
-            class="remove-slot-button"
-            v-on:click="removeSlot(slot.id)"
-          >
+          <div class="remove-slot-button" v-on:click="removeSlot(slot.id)">
             <b-button
               icon-right="minus"
               type="is-warning"
@@ -41,10 +32,7 @@
       </div>
 
       <div class="level">
-        <div
-          class="add-slot-button"
-          v-on:click="addSlot()"
-        >
+        <div class="add-slot-button" v-on:click="addSlot()">
           <b-button
             icon-right="plus"
             type="is-primary"
@@ -52,124 +40,139 @@
           ></b-button>
         </div>
       </div>
-
     </div>
   </div>
-
 </template>
 
 <script>
-import AnnotatedText from 'vue-annotated-text'
-import util from '../util'
+import AnnotatedText from 'vue-annotated-text';
+import util from '../util';
 
 export default {
   name: 'RoleLabellingComponent',
-  components: {
-  },
+  components: {},
   props: {
     tokens: Array,
     sentence: String,
+    slotLabels: {
+      type: Array,
+      default: () => {
+        return null;
+      },
+    },
   },
   data() {
     return {
       slots: [this.defaultSlot()],
       activeSlotId: 1,
       spanEvents: {
-        'click': this.handleTokenSpanClicked
+        click: this.handleTokenSpanClicked,
       },
-    }
+    };
+  },
+  watch: {
+    slotLabels() {
+      if (this.slotLabels) {
+        this.slots = [];
+        this.slotLabels.forEach(slotLabel => {
+          this.addSlot(slotLabel);
+        });
+      }
+      this.activateSlot(1);
+    },
   },
   methods: {
-    defaultSlot: function() {
+    defaultSlot() {
       const slot = {
         id: 1,
         label: 'slot1',
         tokens: [],
-      }
-      return slot
+      };
+      return slot;
     },
-    newSlotId: function() {
-      let newSlotId
+    newSlotId() {
+      let newSlotId;
       if (this.slots.length === 0) {
-        newSlotId = 1
+        newSlotId = 1;
       } else {
-        const slotIds = this.slots.map(slot => slot.id)
-        const greatestId = Math.max(...slotIds)
-        newSlotId = greatestId + 1
+        const slotIds = this.slots.map(slot => slot.id);
+        const greatestId = Math.max(...slotIds);
+        newSlotId = greatestId + 1;
       }
-      return newSlotId
+      return newSlotId;
     },
-    addSlot: function() {
-      const newSlotId = this.newSlotId()
-      const newSlotLabel = `slot${newSlotId}`
+    addSlot(newSlotLabel) {
+      const newSlotId = this.newSlotId();
+      newSlotLabel =
+        newSlotLabel !== undefined ? newSlotLabel : `slot${newSlotId}`;
       const newSlot = {
         ...this.defaultSlot(),
         id: newSlotId,
         label: newSlotLabel,
-      }
-      this.slots.push(newSlot)
-      this.activateSlot(newSlotId)
+      };
+      this.slots.push(newSlot);
+      this.activateSlot(newSlotId);
     },
-    removeSlot: function(slotId) {
+    removeSlot(slotId) {
       const newSlots = this.slots.filter(slot => {
-        return slot.id !== slotId
-      })
-      this.slots = newSlots
+        return slot.id !== slotId;
+      });
+      this.slots = newSlots;
     },
-    activateSlot: function(slotId) {
-      this.activeSlotId = slotId
+    activateSlot(slotId) {
+      this.activeSlotId = slotId;
     },
-    handleTokenSpanClicked: function(e, annotations) {
-      let tokenId = annotations[0].id
-      tokenId = Number(tokenId)
-      const token = util.objById(this.tokens, tokenId)
-      this.addOrRemoveTokenFromActiveSlot(token)
+    handleTokenSpanClicked(e, annotations) {
+      let tokenId = annotations[0].id;
+      tokenId = Number(tokenId);
+      const token = util.objById(this.tokens, tokenId);
+      this.addOrRemoveTokenFromActiveSlot(token);
     },
-    addOrRemoveTokenFromActiveSlot: function(token) {
+    addOrRemoveTokenFromActiveSlot(token) {
       const newSlots = this.slots.map(slot => {
         if (slot.id === this.activeSlotId) {
           if (!slot.tokens.includes(token)) {
-            slot.tokens.push(token)
+            slot.tokens.push(token);
           } else {
             slot.tokens = slot.tokens.filter(tokenAlready => {
-              return tokenAlready.id != token.id
-            })
+              return tokenAlready.id != token.id;
+            });
           }
         }
-        return slot
-      })
-      this.slots = newSlots
+        return slot;
+      });
+      this.slots = newSlots;
     },
-    tokenHolderClasses: function(slot) {
-      const classes = ['slot-token-holder', 'is-child']
+    tokenHolderClasses(slot) {
+      const classes = ['slot-token-holder', 'is-child'];
       if (slot.id === this.activeSlotId) {
-        classes.push('slot-token-holder-active')
+        classes.push('slot-token-holder-active');
       }
-      return classes
+      return classes;
     },
-    getAnnotationColor: function (annotation) {
-      return '#42b3f4'
+    getAnnotationColor(annotation) {
+      return '#42b3f4';
     },
-    getSpanClasses: function(span) {
+    getSpanClasses(span) {
       if (span.annotationIds.length > 0) {
-        return ['token']
+        return ['token'];
       } else {
-        return []
+        return [];
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
 .slot-token-holder {
-  box-shadow:inset 0px 0px 0px 1px #000;
+  box-shadow: inset 0px 0px 0px 1px #000;
   min-height: 50px;
   padding: 10px;
   margin-bottom: 26px;
 }
 .slot-token-holder-active {
-  box-shadow:inset 0px 0px 0px 2px #000;
+  box-shadow: inset 0px 0px 0px 2px #000;
 }
 .add-slot-button {
 }
@@ -177,6 +180,6 @@ export default {
 }
 .token:hover {
   outline: 1px solid black;
-  background-color: #FCE4EC !important;
+  background-color: #fce4ec !important;
 }
 </style>

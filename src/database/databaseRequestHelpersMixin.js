@@ -11,15 +11,17 @@ import config from '../config';
 const { databaseLoadingChunkSize } = config
 
 const databaseRequestHelpersMixin = {
-  buildRequestParamsObject (startRow, endRow) {
+  buildRequestParamsObject (startRow, endRow, headers) {
+    headers = headers !== undefined ? headers : {}
     const params = {
       headers: {
         range: `rows=${startRow}-${endRow}`, // The range is inclusive
+        ...headers,
       },
     }
     return params
   },
-  buildRecursiveRequest ({ queryUrl, startRow, rowLimit, itemsHandler, resolve, chunkSize }) {
+  buildRecursiveRequest ({ queryUrl, startRow, rowLimit, itemsHandler, resolve, chunkSize, headers }) {
     console.log(startRow, rowLimit)
     if ( rowLimit !== undefined && startRow >= rowLimit ) {
       throw 'Row limit reached'
@@ -28,7 +30,7 @@ const databaseRequestHelpersMixin = {
       chunkSize = databaseLoadingChunkSize
     }
     const endRow = util.getEndChunkValue(startRow, chunkSize)
-    const params = this.buildRequestParamsObject(startRow, endRow)
+    const params = this.buildRequestParamsObject(startRow, endRow, headers)
     const request = axios.get(queryUrl, params)
       .then(response => {
         let items = response.data
@@ -41,6 +43,7 @@ const databaseRequestHelpersMixin = {
           itemsHandler,
           resolve,
           chunkSize,
+          headers
         }
         const nextRequest = this.buildRecursiveRequest(nextRequestArgs)
         return nextRequest

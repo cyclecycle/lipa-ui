@@ -4,10 +4,38 @@
     <div>
       <RoleLabellingComponent
         ref="roleLabellingComponent"
-        v-bind:sentence="sentence.text"
-        v-bind:tokens="tokens"
+        :sentence="sentence.text"
+        :tokens="tokens"
+        :slotLabels="activeTemplateMatchSlotLabels"
       />
     </div>
+
+    <div id="features">
+      <b-field
+        label="Token features"
+        :type="featureDictIsValidJSON ? 'is-success' : 'is-danger'"
+        :message="featureDictIsValidJSON ? 'Valid JSON' : 'Invalid JSON'"
+      >
+        <b-input v-model="featureDictInputValue" type="textarea" />
+      </b-field>
+    </div>
+
+    <div id="templates">
+      <label class="label">Load template</label>
+      <div class="buttons">
+        <b-button
+          v-for="match in trainingMatchesHistory"
+          @click="
+            () => {
+              activeTemplateMatch = match;
+            }
+          "
+        >
+          {{ match | matchSlotRepr }}
+        </b-button>
+      </div>
+    </div>
+
     <b-button
       v-on:click="submitTrainingMatch()"
       type="is-primary"
@@ -39,7 +67,51 @@ export default {
       sentence: null,
       tokens: [],
       loading: false,
+      featureDict: { DEP: 'dep_', TAG: 'tag_' },
+      featureDictInputValue: '',
+      featureDictIsValidJSON: true,
+      trainingMatchesHistory: [],
+      activeTemplateMatch: null,
     };
+  },
+  watch: {
+    featureDictInputValue() {
+      try {
+        this.featureDict = JSON.parse(this.featureDictInputValue);
+        this.featureDictIsValidJSON = true;
+      } catch {
+        this.featureDictIsValidJSON = false;
+      }
+    },
+    activeTemplateMatch() {
+      if (
+        this.activeTemplateMatch != null &&
+        this.activeTemplateMatch.feature_dict !== undefined
+      ) {
+        this.featureDictInputValue = JSON.stringify(
+          this.activeTemplateMatch.feature_dict,
+          null,
+          2
+        );
+      }
+    },
+  },
+  computed: {
+    activeTemplateMatchSlotLabels() {
+      const activeTemplateMatch = this.activeTemplateMatch;
+      if (activeTemplateMatch !== null) {
+        const slotLabels = Object.keys(this.activeTemplateMatch.slots);
+        return slotLabels;
+      } else {
+        return null;
+      }
+    },
+    activeTemplateMatchFeatureDict() {
+      const featureDict = this.activeTemplateMatch.feature_dict;
+      if (featureDict !== undefined) {
+        console.log(featureDict);
+      }
+    },
   },
   mounted() {
     const sentenceId = this.sentenceId;
@@ -57,14 +129,31 @@ export default {
       targetObj: this,
       targetAttribute: tokensTargetAttribute,
     });
+    this.getRecentTrainingMatchHistory();
+    this.featureDictInputValue = JSON.stringify(this.featureDict, null, 2);
   },
   methods: {
-    isLoaded: function() {
+    getRecentTrainingMatchHistory() {
+      database
+        .get('pattern_training_matches/', {
+          headers: { order: 'match_id desc' },
+        })
+        .then(rows => {
+          const match_ids = rows.map(row => row.match_id);
+          return database.loadByIds(
+            'matches',
+            match_ids,
+            this,
+            'trainingMatchesHistory'
+          );
+        });
+    },
+    isLoaded() {
       const sentenceLoaded = this.sentence !== null;
       const isLoaded = sentenceLoaded;
       return isLoaded;
     },
-    roleSlotArrayToObj: function(roleSlots) {
+    roleSlotArrayToObj(roleSlots) {
       const obj = {};
       roleSlots.forEach(roleSlot => {
         const label = roleSlot.label;
@@ -73,13 +162,23 @@ export default {
       });
       return obj;
     },
-    submitTrainingMatch: function() {
+    submitTrainingMatch() {
       // POST training example to database. On success, show message and link to pattern table, and call pattern generation APi with training example ID. Listen, and show status in pattern table through "calculating" and "finding matches", and potentially "error".
       this.loading = !this.loading;
       const roleSlots = this.$refs.roleLabellingComponent.slots;
       const matchObj = this.roleSlotArrayToObj(roleSlots);
+      const featureDict = this.featureDict;
       const sentenceId = this.sentenceId;
-      database.postMatch(matchObj, sentenceId).then(matchRow => {
+      const matchJSON = JSON.stringify({
+        slots: matchObj,
+        feature_dict: featureDict,
+      });
+      const data = {
+        sentence_id: sentenceId,
+        data: matchJSON,
+      };
+      console.log(data);
+      database.post('matches/', data).then(matchRow => {
         const matchId = matchRow.id;
         console.log('match id:', matchId);
         this.loading = !this.loading;
@@ -90,5 +189,21 @@ export default {
       });
     },
   },
+  filters: {
+    matchSlotRepr(match) {
+      const slotLabels = Object.keys(match.slots);
+      const repr = slotLabels.join('-');
+      return repr;
+    },
+  },
 };
 </script>
+
+<style>
+#features {
+  margin-top: 40px;
+}
+#templates {
+  margin-top: 40px;
+}
+</style>

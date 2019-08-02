@@ -66,21 +66,22 @@ class Database {
   }
 
   itemsHandler(items, loadOntoTarget, targetAttribute) {
-    console.log(items)
+    // console.log(items)
     items = items.map(item => this.parseJsonFields(item))
     items = util.unpackFields(items, fieldsToUnpack)
     util.loadOnto(items, loadOntoTarget, targetAttribute)
     return items
   }
 
-  get(queryString) {
+  get(queryString, params) {
+    params = params !== undefined ? params : {}
     const queryUrl = this.queryUrl(queryString)
     console.log(queryUrl)
-    return axios.get(queryUrl)
+    return axios.get(queryUrl, params)
       .then(response => {
         let items = response.data
         items = this.itemsHandler(items)
-        console.log(items)
+        // console.log(items)
         return items
       })
       .catch(e => {
