@@ -132,7 +132,7 @@ export default {
       // If just pos match, build pattern. else refine
       const buildPatternData = {
         pos_match_id: this.posMatchId,
-        featureDict: this.featureDict,
+        feature_dict: this.featureDict,
       };
       console.log(buildPatternData)
       patternAPI.emit('build_pattern', buildPatternData);
