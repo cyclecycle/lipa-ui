@@ -189,6 +189,7 @@ export default {
       query: loadMatchesQuery,
       targetObj: this,
       targetAttribute: 'matches',
+      chunkSize: 5,
     });
   },
   methods: {

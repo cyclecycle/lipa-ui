@@ -27,6 +27,11 @@
       <p v-for="message in patternAPIMessageLog">
         <strong>{{ message }}</strong>
       </p>
+      <p v-if="findMatchesSuccess">
+        <router-link :to="'matches/?pattern_id=' + patternResults.patternId">
+          View matches
+        </router-link>
+      </p>
     </section>
   </div>
 </template>
@@ -62,6 +67,7 @@ export default {
       patternResults: null,
       patternAPIMessageLog: [],
       buildPatternResultsReceived: false,
+      findMatchesSuccess: false,
     };
   },
   mounted() {
@@ -123,6 +129,7 @@ export default {
       });
       patternAPI.on('find_matches_success', function(data) {
         patternAPIMessageLog.push('Find matches success');
+        this_.findMatchesSuccess = true
       });
     },
     calculatePattern() {

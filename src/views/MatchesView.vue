@@ -8,7 +8,11 @@
       </div>
       <div class="level-right">
         <div class="level-item">
-          <div class="button is-small" style="cursor: default">
+          <div
+            v-if="isNaN(patternId)"
+            class="button is-small"
+            style="cursor: default"
+          >
             {{ matchesCount }} matches
           </div>
         </div>
@@ -30,15 +34,13 @@
       @close="showMatchVisModal = false"
       :showLegend="true"
     />
-
   </div>
 </template>
 
 <script>
-import database from '../database'
-import MatchTable from '../components/MatchTable.vue'
-import DotVisualisationModal from '../components/DotVisualisationModal.vue'
-
+import database from '../database';
+import MatchTable from '../components/MatchTable.vue';
+import DotVisualisationModal from '../components/DotVisualisationModal.vue';
 
 export default {
   name: 'MatchesView',
@@ -46,7 +48,7 @@ export default {
     patternId: {
       type: Number,
       default: NaN,
-    }
+    },
   },
   components: {
     MatchTable,
@@ -56,46 +58,60 @@ export default {
     return {
       matches: [],
       matchesPerPage: 30,
-      matchesCountResult: {count: 0},
+      matchesCountResult: { count: 0 },
       loading: true,
       activeMatchId: null,
       showMatchVisModal: false,
-    }
+    };
   },
   computed: {
     matchesCount() {
-      return this.matchesCountResult.count
+      return this.matchesCountResult.count;
     },
   },
   mounted() {
-    this.loadMatchesCount()
-    this.loadMatches(1)
+    this.loadMatchesCount();
+    const page = 1;
+    this.loadMatches(page);
+    if (!isNaN(this.patternId)) {
+      this.loadTrainingMatch();
+    }
   },
   methods: {
     loadMatchesCount() {
-      let query = 'pattern_matches_count_view'
+      let query = 'pattern_matches_count_view';
       if (!isNaN(this.patternId)) {
-        query = query + `/?pattern_id=${this.patternId}`
+        query = query + `/?pattern_id=${this.patternId}`;
       }
-      const targetAttribute = 'matchesCountResult'
+      const targetAttribute = 'matchesCountResult';
       database.loadOneByQuery({
         targetObj: this,
         targetAttribute,
         query,
-      })
+      });
+    },
+    loadTrainingMatch() {
+      const query = `pattern_training_matches_view/?pattern_id=${
+        this.patternId
+      }`;
+      database.get(query).then(items => {
+        const item = items[0];
+        item.isTrainingMatch = true;
+        this.matches.unshift(item);
+      });
     },
     loadMatches(page) {
-      console.log(page)
-      this.loading = true
-      let query = 'pattern_matches_view'
+      console.log(page);
+      this.loading = true;
+      let query = 'pattern_matches_view';
       if (!isNaN(this.patternId)) {
-        query = query + `/?pattern_id=${this.patternId}`
+        query = query + `/?pattern_id=${this.patternId}`;
       }
-      const targetAttribute = 'matches'
-      console.log('page:', page)
-      const startRow = (page - 1) * this.matchesPerPage
-      const rowLimit = startRow + this.matchesPerPage
-      const chunkSize = 5
+      const targetAttribute = 'matches';
+      console.log('page:', page);
+      const startRow = (page - 1) * this.matchesPerPage;
+      const rowLimit = startRow + this.matchesPerPage;
+      const chunkSize = 5;
       const loadParams = {
         targetObj: this,
         query,
@@ -103,17 +119,16 @@ export default {
         startRow,
         rowLimit,
         chunkSize,
-      }
-      console.log(loadParams)
-      database.loadByQueryIteratively(loadParams)
-        .then(() => {
-          this.loading = false
-        })
+      };
+      console.log(loadParams);
+      database.loadByQueryIteratively(loadParams).then(() => {
+        this.loading = false;
+      });
     },
-    openMatchVisModal (matchId) {
-      this.activeMatchId = matchId
-      this.showMatchVisModal = true
+    openMatchVisModal(matchId) {
+      this.activeMatchId = matchId;
+      this.showMatchVisModal = true;
     },
-  }
-}
+  },
+};
 </script>

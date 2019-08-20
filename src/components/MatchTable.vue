@@ -10,6 +10,7 @@
     backend-pagination
     :per-page="perPage"
     @page-change="onPageChange"
+    :row-class="(row, index) => row.isTrainingMatch && 'training-match'"
   >
 
     <template slot-scope="props">
@@ -188,5 +189,11 @@ export default {
 <style>
   .outline {
     outline: 1px solid black;
+  }
+  tr.training-match {
+    background: #e6dfcf;
+  }
+  tr.training-match:hover {
+    background: #e6dfcf;
   }
 </style>
