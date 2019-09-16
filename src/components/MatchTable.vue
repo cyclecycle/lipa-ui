@@ -49,6 +49,7 @@
       <b-table-column>
         <b-tooltip label="Visualise match">
           <div
+            v-if="props.row.isTrainingMatch !== true"
             @click="openMatchVisModal(props.row.id)"
             class="row-action"
           >
@@ -194,6 +195,6 @@ export default {
     background: #e6dfcf;
   }
   tr.training-match:hover {
-    background: #e6dfcf;
+    background: #e0dacc;
   }
 </style>

@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       patterns: [],
-      loading: true,
+      loading: false,
       modalLoading: false,
       showPatternVisModal: false,
       activePatternId: null,

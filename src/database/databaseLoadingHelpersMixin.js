@@ -72,6 +72,7 @@ const databaseLoadingHelpersMixin = {
       return database.get(query).then(items => {
         let item = items[0];
         target[targetAttribute].push(item);
+        return item
       });
     });
     return Promise.all(requests)

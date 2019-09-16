@@ -31,7 +31,7 @@
             }
           "
         >
-          {{ match | matchSlotRepr }}
+          {{ matchSlotRepr(match) }}
         </b-button>
       </div>
     </div>
@@ -136,7 +136,7 @@ export default {
     getRecentTrainingMatchHistory() {
       database
         .get('pattern_training_matches/', {
-          headers: { order: 'match_id desc' },
+          headers: { order: 'match_id desc', range: 'rows=0-50' },
         })
         .then(rows => {
           const match_ids = rows.map(row => row.match_id);
@@ -145,6 +145,18 @@ export default {
             match_ids,
             this,
             'trainingMatchesHistory'
+          );
+        })
+        .then(() => {
+          const slotReprsAlready = []
+          this.trainingMatchesHistory = this.trainingMatchesHistory.filter(
+            match => {
+              const slotRepr = this.matchSlotRepr(match)
+              if (!slotReprsAlready.includes(slotRepr)) {
+                slotReprsAlready.push(slotRepr)
+                return slotRepr
+              }
+            }
           );
         });
     },
@@ -188,8 +200,6 @@ export default {
         });
       });
     },
-  },
-  filters: {
     matchSlotRepr(match) {
       const slotLabels = Object.keys(match.slots);
       const repr = slotLabels.join('-');
